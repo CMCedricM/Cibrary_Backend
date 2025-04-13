@@ -37,12 +37,13 @@ namespace Cibrary_Backend.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost("updateUser")]
         [Authorize]
-        public IActionResult UpdateProfile(UserProfile user)
+        public ActionResult<UserProfile> UpdateProfile(UserProfile user)
         {
+            if (ModelState.IsValid) { return Ok(user);  }
+            else { return BadRequest(ModelState);  }
 
-            return Ok(user); 
         }
        
 
