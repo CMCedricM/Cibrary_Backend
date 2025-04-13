@@ -1,4 +1,5 @@
 ﻿using Cibrary_Backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cibrary_Backend.Controllers
@@ -26,7 +27,16 @@ namespace Cibrary_Backend.Controllers
             return Ok(testProfile);
         }
 
-        
-       
+        [HttpGet("private")]
+        [Authorize]
+        public IActionResult Private()
+        {
+            return Ok(new
+            {
+                Message = "Hello from a private endpoint! You need to be authenticated to see this."
+            });
+        }
+
+
     }
 }
