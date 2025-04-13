@@ -37,6 +37,15 @@ namespace Cibrary_Backend.Controllers
             });
         }
 
+        [HttpPost]
+        [Authorize]
+        public IActionResult UpdateProfile(UserProfile user)
+        {
+
+            return Ok(user); 
+        }
+       
+
 
     }
 }
