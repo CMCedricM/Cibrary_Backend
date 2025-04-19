@@ -1,5 +1,7 @@
 using System.Security.Claims;
+using Cibrary_Backend.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -18,10 +20,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Configuration.AddEnvironmentVariables();
+
+var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
+
 
 var app = builder.Build();
 

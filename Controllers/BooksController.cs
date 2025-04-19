@@ -5,12 +5,9 @@ namespace Cibrary_Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class Book : Controller
+    public class BooksController : ControllerBase
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+     
 
         private readonly BookProfile[] books =
         {

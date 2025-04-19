@@ -1,11 +1,18 @@
-﻿namespace Cibrary_Backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Cibrary_Backend.Models
 {
     public class UserProfile
     {
-        public string UserName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
-        public string? LastName { get; set; }
+        [Key]
+        public int id { get; set; }
+        public string username { get; set; } = string.Empty;
+
+        public string email { get; set; } = string.Empty;
+
+        public string firstname { get; set; } = string.Empty;
+        public string? lastname { get; set; }
+        public DateTime? lastlogin { get; set; }
 
 
     }
