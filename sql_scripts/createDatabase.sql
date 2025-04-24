@@ -16,7 +16,7 @@ CREATE TABLE Books(
   TotalCnt integer
 );
 
-CREATE TYPE book_status AS ENUM ('returned', 'checked-out', 'overdue');
+CREATE TYPE book_status AS ENUM ('returned', 'checked_out', 'overdue');
 
 CREATE TABLE Circulation(
   id serial Primary key, 

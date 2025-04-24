@@ -1,6 +1,8 @@
 ﻿using System;
 using Cibrary_Backend.Models;
+using Cibrary_Backend.Enums;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Cibrary_Backend.Contexts;
 
@@ -8,6 +10,7 @@ public class ApplicationDbContext : DbContext
 {
     public DbSet<UserProfile> Users { get; set; }
     public DbSet<BookProfile> BookProfiles { get; set; }
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
           : base(options) { }
 
@@ -24,6 +27,7 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<UserProfile>().ToTable("users");
         modelBuilder.Entity<BookProfile>().ToTable("books");
+        modelBuilder.HasPostgresEnum<Status>();
     }
 
     public async Task<UserProfile> CreateNewUser(UserProfile user)
