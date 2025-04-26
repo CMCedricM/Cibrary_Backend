@@ -1,5 +1,6 @@
 CREATE TABLE Users (
   id serial Primary key,
+  auth0Id text,
   UserName text,
   Email text,
   FirstName text,
@@ -25,7 +26,7 @@ CREATE TABLE Circulation(
   Checkout_Date timestamp,
   Due_Date timestamp,
   Return_Date timestamp null,
-  Status book_status default 'checked-out',
+  Status book_status default 'checked_out',
   CONSTRAINT fk_User FOREIGN KEY (User_Id)
   REFERENCES Users(id),
   CONSTRAINT fk_Books FOREIGN KEY (Book_Id) 

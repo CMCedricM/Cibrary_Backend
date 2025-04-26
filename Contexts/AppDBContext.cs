@@ -42,4 +42,25 @@ public class ApplicationDbContext : DbContext
         return user;
     }
 
+    public async Task<int> UpdateUser(UserProfile userProfile)
+    {
+        var user = await Users.SingleAsync(b => b.auth0id == userProfile.auth0id);
+        if (user != null)
+        {
+            var properties = typeof(UserProfile).GetProperties();
+            foreach (var prop in properties)
+            {
+                if (prop.Name != "id")
+                {
+                    var newValue = prop.GetValue(userProfile);
+                    prop.SetValue(user, newValue);
+                }
+            }
+        }
+        else return -1; //return error 
+        await SaveChangesAsync();
+
+        return 0;
+    }
+
 }

@@ -64,9 +64,15 @@ namespace Cibrary_Backend.Controllers
         }
         [HttpPost("updateUser")]
         [Authorize]
-        public ActionResult<UserProfile> UpdateProfile(UserProfile user)
+        public async Task<ActionResult<UserProfile>> UpdateProfile(UserProfile user)
         {
-            if (ModelState.IsValid) { return Ok(user); }
+            if (ModelState.IsValid)
+            {
+                int success = await _context.UpdateUser(user);
+                if (success != -1) return Ok(user);
+
+                return BadRequest("Unable to update");
+            }
             else { return BadRequest(ModelState); }
 
         }
