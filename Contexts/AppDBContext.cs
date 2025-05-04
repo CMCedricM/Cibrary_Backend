@@ -30,6 +30,13 @@ public class ApplicationDbContext : DbContext
         modelBuilder.HasPostgresEnum<Status>();
     }
 
+    public async Task<UserProfile?> GetUser(UserProfile user)
+    {
+
+        var userInfo = await Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);
+
+        return userInfo;
+    }
     public async Task<UserProfile> CreateNewUser(UserProfile user)
     {
         if (user.lastlogin == null)
@@ -44,7 +51,7 @@ public class ApplicationDbContext : DbContext
 
     public async Task<int> UpdateUser(UserProfile userProfile)
     {
-        var user = await Users.SingleAsync(b => b.auth0id == userProfile.auth0id);
+        var user = await Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
         if (user != null)
         {
             var properties = typeof(UserProfile).GetProperties();
@@ -59,6 +66,19 @@ public class ApplicationDbContext : DbContext
         }
         else return -1; //return error 
         await SaveChangesAsync();
+
+        return 0;
+    }
+
+    public async Task<int> RemoveUser(UserProfile userProfile)
+    {
+        var user = await Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
+        if (user != null)
+        {
+            Users.Remove(user);
+            await SaveChangesAsync();
+        }
+        else return -1;
 
         return 0;
     }

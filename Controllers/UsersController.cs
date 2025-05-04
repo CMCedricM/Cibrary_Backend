@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿
 using Cibrary_Backend.Contexts;
 using Cibrary_Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Cibrary_Backend.Controllers
 {
@@ -12,24 +13,13 @@ namespace Cibrary_Backend.Controllers
     {
 
         private readonly ApplicationDbContext _context;
+        private readonly string authId = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
         public UsersController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        static private readonly UserProfile testProfile = new()
-        {
-            username = "testUser",
-            email = "test@email.com",
-            firstname = "FirstName"
-        };
-
-
-        [HttpGet]
-        public ActionResult<UserProfile> GetUserInfo()
-        {
-            return Ok(testProfile);
-        }
+        // Debug Endpoints
 
         [HttpGet("private")]
         [Authorize]
@@ -49,6 +39,38 @@ namespace Cibrary_Backend.Controllers
 
         }
 
+        [Authorize]
+        [HttpGet("debugClaims")]
+        public IActionResult DebugClaims()
+        {
+            var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+            return Ok(claims);
+        }
+
+
+
+        // Real Endpoints Below //
+
+        [HttpGet]
+        public async Task<ActionResult<UserProfile>> GetUserInfo(UserProfile user)
+        {
+            var auth0User = User.FindFirst(authId)?.Value;
+            if (string.IsNullOrEmpty(auth0User))
+            {
+                Console.WriteLine(User.Claims);
+                return Unauthorized("User ID not allowed!");
+            }
+            else if (auth0User != user.auth0id)
+            {
+                return Unauthorized("Improper auth0user!");
+            }
+            var userInfo = await _context.GetUser(user);
+            if (userInfo == null) return NotFound("User Not Found!");
+
+            return userInfo;
+        }
+
+
         [HttpPost("createUser")]
         [Authorize]
         public async Task<ActionResult<UserProfile>> CreateProfile(UserProfile profile)
@@ -66,12 +88,39 @@ namespace Cibrary_Backend.Controllers
         [Authorize]
         public async Task<ActionResult<UserProfile>> UpdateProfile(UserProfile user)
         {
+            var auth0User = User.FindFirst("authId")?.Value;
+            if (string.IsNullOrEmpty(auth0User) || user.auth0id == auth0User)
+            {
+                return Unauthorized("Invalid User!");
+            }
+
             if (ModelState.IsValid)
             {
                 int success = await _context.UpdateUser(user);
                 if (success != -1) return Ok(user);
 
                 return BadRequest("Unable to update");
+            }
+            else { return BadRequest(ModelState); }
+
+        }
+
+        [HttpDelete("removeUser")]
+        [Authorize]
+        public async Task<ActionResult> RemoveProfile(UserProfile user)
+        {
+            var auth0User = User.FindFirst("authId")?.Value;
+            if (string.IsNullOrEmpty(auth0User) || user.auth0id == auth0User)
+            {
+                return Unauthorized("Invalid User!");
+            }
+
+            if (ModelState.IsValid)
+            {
+                int success = await _context.RemoveUser(user);
+                if (success != -1) return Ok(user);
+
+                return BadRequest("Unable to delete user!");
             }
             else { return BadRequest(ModelState); }
 
