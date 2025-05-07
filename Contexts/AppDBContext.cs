@@ -82,4 +82,10 @@ public class ApplicationDbContext : DbContext
         return 0;
     }
 
+    public async Task<int> FetchBookCount()
+    {
+        int booksCnt = await BookProfiles.CountAsync();
+        return booksCnt;
+    }
+
 }

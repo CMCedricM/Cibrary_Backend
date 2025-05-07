@@ -67,7 +67,7 @@ namespace Cibrary_Backend.Controllers
             var userInfo = await _context.GetUser(user);
             if (userInfo == null) return NotFound("User Not Found!");
 
-            return userInfo;
+            return Ok(userInfo);
         }
 
 
