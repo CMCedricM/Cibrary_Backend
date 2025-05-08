@@ -60,6 +60,12 @@ namespace Cibrary_Backend.Controllers
             return Ok(book);
         }
 
+        [HttpPost("/add-book")]
+        [Authorize]
+        public async Task<IActionResult> AddABook(BookProfile aBook)
+        {
+            return NotFound("Endpoint not ready");
+        }
 
 
     }
