@@ -26,10 +26,12 @@ builder.Services.AddOpenApi();
 builder.Configuration.AddEnvironmentVariables();
 
 var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+
+builder.Services.AddDbContext<UsersDBContext>(options =>
     options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
 
-
+builder.Services.AddDbContext<BooksDBContext>(options =>
+    options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
 var app = builder.Build();
 
 

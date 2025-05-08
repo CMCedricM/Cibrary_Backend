@@ -12,9 +12,9 @@ namespace Cibrary_Backend.Controllers
     public class UsersController : ControllerBase
     {
 
-        private readonly ApplicationDbContext _context;
+        private readonly UsersDBContext _context;
         private readonly string authId = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
-        public UsersController(ApplicationDbContext context)
+        public UsersController(UsersDBContext context)
         {
             _context = context;
         }

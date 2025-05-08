@@ -10,8 +10,8 @@ namespace Cibrary_Backend.Controllers
     public class BooksController : ControllerBase
     {
 
-        private readonly ApplicationDbContext _context;
-        public BooksController(ApplicationDbContext context)
+        private readonly BooksDBContext _context;
+        public BooksController(BooksDBContext context)
         {
             _context = context;
         }

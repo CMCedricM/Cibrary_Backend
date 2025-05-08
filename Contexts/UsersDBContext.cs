@@ -1,17 +1,16 @@
-﻿using Cibrary_Backend.Models;
+using Cibrary_Backend.Models;
 using Cibrary_Backend.Enums;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Cibrary_Backend.Contexts;
 
-public class ApplicationDbContext : DbContext
+public class UsersDBContext : DbContext
 {
-    public DbSet<UserProfile> Users { get; set; }
-    public DbSet<BookProfile> BookProfiles { get; set; }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-          : base(options) { }
+    public DbSet<UserProfile> Users { get; set; }
+
+    public UsersDBContext(DbContextOptions<UsersDBContext> options)
+       : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -25,8 +24,6 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserProfile>().ToTable("users");
-        modelBuilder.Entity<BookProfile>().ToTable("books");
-        modelBuilder.HasPostgresEnum<Status>();
     }
 
     public async Task<UserProfile?> GetUser(UserProfile user)
@@ -80,12 +77,6 @@ public class ApplicationDbContext : DbContext
         else return -1;
 
         return 0;
-    }
-
-    public async Task<int> FetchBookCount()
-    {
-        int booksCnt = await BookProfiles.CountAsync();
-        return booksCnt;
     }
 
 }
