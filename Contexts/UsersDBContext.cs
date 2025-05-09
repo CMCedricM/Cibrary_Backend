@@ -26,57 +26,5 @@ public class UsersDBContext : DbContext
         modelBuilder.Entity<UserProfile>().ToTable("users");
     }
 
-    public async Task<UserProfile?> GetUser(UserProfile user)
-    {
-
-        var userInfo = await Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);
-
-        return userInfo;
-    }
-    public async Task<UserProfile> CreateNewUser(UserProfile user)
-    {
-        if (user.lastlogin == null)
-        {
-            var time = DateTime.UtcNow.ToUniversalTime();
-            user.lastlogin = time;
-        }
-        Users.Add(user);
-        await SaveChangesAsync();
-        return user;
-    }
-
-    public async Task<int> UpdateUser(UserProfile userProfile)
-    {
-        var user = await Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
-        if (user != null)
-        {
-            var properties = typeof(UserProfile).GetProperties();
-            foreach (var prop in properties)
-            {
-                if (prop.Name != "id")
-                {
-                    var newValue = prop.GetValue(userProfile);
-                    prop.SetValue(user, newValue);
-                }
-            }
-        }
-        else return -1; //return error 
-        await SaveChangesAsync();
-
-        return 0;
-    }
-
-    public async Task<int> RemoveUser(UserProfile userProfile)
-    {
-        var user = await Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
-        if (user != null)
-        {
-            Users.Remove(user);
-            await SaveChangesAsync();
-        }
-        else return -1;
-
-        return 0;
-    }
 
 }
