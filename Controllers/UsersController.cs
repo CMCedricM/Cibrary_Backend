@@ -55,15 +55,8 @@ namespace Cibrary_Backend.Controllers
         public async Task<ActionResult<UserProfile>> GetUserInfo(UserProfile user)
         {
             var auth0User = User.FindFirst(authId)?.Value;
-            if (string.IsNullOrEmpty(auth0User))
-            {
-                Console.WriteLine(User.Claims);
-                return Unauthorized("User ID not allowed!");
-            }
-            else if (auth0User != user.auth0id)
-            {
-                return Unauthorized("Improper auth0user!");
-            }
+            if (string.IsNullOrEmpty(auth0User) || auth0User != user.auth0id) return Unauthorized();
+
             var userInfo = await _userService.GetUserAsync(user);
             if (userInfo == null) return NotFound("User Not Found!");
 
@@ -75,34 +68,31 @@ namespace Cibrary_Backend.Controllers
         [Authorize]
         public async Task<ActionResult<UserProfile>> CreateProfile(UserProfile profile)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid) return BadRequest();
+
             var checkUser = await _userService.GetUserAsync(profile);
-            if (checkUser != null) { return Conflict(new { message = "User already exists!" }); }
+            if (checkUser != null) return Conflict(new { message = "User already exists!" });
 
             await _userService.CreateUserAsync(profile);
+
             return Ok(profile);
         }
+
+
         [HttpPost("updateUser")]
         [Authorize]
         public async Task<ActionResult<UserProfile>> UpdateProfile(UserProfile user)
         {
             var auth0User = User.FindFirst("authId")?.Value;
-            if (string.IsNullOrEmpty(auth0User) || user.auth0id == auth0User)
-            {
-                return Unauthorized("Invalid User!");
-            }
+            if (string.IsNullOrEmpty(auth0User) || user.auth0id == auth0User) return Unauthorized();
 
             if (ModelState.IsValid)
             {
                 int success = await _userService.UpdateUserAsync(user);
                 if (success != -1) return Ok(user);
-
-                return BadRequest("Unable to update");
             }
-            else { return BadRequest(ModelState); }
+
+            return BadRequest(ModelState);
 
         }
 
@@ -111,19 +101,17 @@ namespace Cibrary_Backend.Controllers
         public async Task<ActionResult> RemoveProfile(UserProfile user)
         {
             var auth0User = User.FindFirst("authId")?.Value;
-            if (string.IsNullOrEmpty(auth0User) || user.auth0id == auth0User)
-            {
-                return Unauthorized("Invalid User!");
-            }
+            if (string.IsNullOrEmpty(auth0User) || user.auth0id == auth0User) return Unauthorized();
 
             if (ModelState.IsValid)
             {
                 int success = await _userService.RemoveUserAsync(user);
                 if (success != -1) return Ok(user);
+                return NotFound("Could not find user!");
 
-                return BadRequest("Unable to delete user!");
             }
-            else { return BadRequest(ModelState); }
+
+            return BadRequest();
 
         }
 

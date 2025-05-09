@@ -26,14 +26,17 @@ public class UsersRepository
     public async Task<UserProfile> CreateNewUser(UserProfile user)
     {
         var checkUser = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);
-        if (checkUser != null) { return checkUser; }
+        if (checkUser != null) return checkUser;
+
         if (user.lastlogin == null)
         {
             var time = DateTime.UtcNow.ToUniversalTime();
             user.lastlogin = time;
         }
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
+
         return user;
     }
 
@@ -53,6 +56,7 @@ public class UsersRepository
             }
         }
         else return -1; //return error 
+
         await _context.SaveChangesAsync();
 
         return 0;
