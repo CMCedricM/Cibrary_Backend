@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Cibrary_Backend.Contexts;
+using Cibrary_Backend.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +25,9 @@ builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializ
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Configuration.AddEnvironmentVariables();
+
+builder.Services.AddScoped<UsersRepository>();
+builder.Services.AddScoped<UsersServices>();
 
 var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET");
 

@@ -12,11 +12,11 @@ namespace Cibrary_Backend.Controllers
     public class UsersController : ControllerBase
     {
 
-        private readonly UsersDBContext _context;
+        private readonly UsersServices _userService;
         private readonly string authId = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
-        public UsersController(UsersDBContext context)
+        public UsersController(UsersServices context)
         {
-            _context = context;
+            _userService = context;
         }
 
         // Debug Endpoints
@@ -64,7 +64,7 @@ namespace Cibrary_Backend.Controllers
             {
                 return Unauthorized("Improper auth0user!");
             }
-            var userInfo = await _context.GetUser(user);
+            var userInfo = await _userService.GetUserAsync(user);
             if (userInfo == null) return NotFound("User Not Found!");
 
             return Ok(userInfo);
@@ -79,9 +79,10 @@ namespace Cibrary_Backend.Controllers
             {
                 return BadRequest();
             }
+            var checkUser = await _userService.GetUserAsync(profile);
+            if (checkUser != null) { return Conflict(new { message = "User already exists!" }); }
 
-            await _context.CreateNewUser(profile);
-
+            await _userService.CreateUserAsync(profile);
             return Ok(profile);
         }
         [HttpPost("updateUser")]
@@ -96,7 +97,7 @@ namespace Cibrary_Backend.Controllers
 
             if (ModelState.IsValid)
             {
-                int success = await _context.UpdateUser(user);
+                int success = await _userService.UpdateUserAsync(user);
                 if (success != -1) return Ok(user);
 
                 return BadRequest("Unable to update");
@@ -117,7 +118,7 @@ namespace Cibrary_Backend.Controllers
 
             if (ModelState.IsValid)
             {
-                int success = await _context.RemoveUser(user);
+                int success = await _userService.RemoveUserAsync(user);
                 if (success != -1) return Ok(user);
 
                 return BadRequest("Unable to delete user!");
