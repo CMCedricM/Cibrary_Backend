@@ -1,4 +1,4 @@
-﻿using Cibrary_Backend.Contexts;
+﻿using Cibrary_Backend.Services;
 using Cibrary_Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +10,8 @@ namespace Cibrary_Backend.Controllers
     public class BooksController : ControllerBase
     {
 
-        private readonly BooksDBContext _context;
-        public BooksController(BooksDBContext context)
+        private readonly BooksServices _context;
+        public BooksController(BooksServices context)
         {
             _context = context;
         }
@@ -40,32 +40,11 @@ namespace Cibrary_Backend.Controllers
         public async Task<ActionResult<int>> GetCount()
         {
 
-            int cnt = await _context.FetchBookCount();
+            int cnt = await _context.GetBookCountAsync();
             return Ok(cnt);
         }
 
 
-        [HttpGet("{id}")]
-        [Authorize]
-        public IActionResult GetBook(int id)
-        {
-
-            var book = books.FirstOrDefault(b => b.ID == id);
-
-            if (book == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(book);
-        }
-
-        [HttpPost("/add-book")]
-        [Authorize]
-        public async Task<IActionResult> AddABook(BookProfile aBook)
-        {
-            return NotFound("Endpoint not ready");
-        }
 
 
     }

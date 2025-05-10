@@ -1,6 +1,7 @@
 using Cibrary_Backend.Models;
 using Cibrary_Backend.Repository;
 
+namespace Cibrary_Backend.Services;
 public class UsersServices
 {
     private readonly UsersRepository _respository;

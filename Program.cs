@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Cibrary_Backend.Contexts;
 using Cibrary_Backend.Repository;
+using Cibrary_Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,9 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddScoped<UsersRepository>();
 builder.Services.AddScoped<UsersServices>();
+
+builder.Services.AddScoped<BooksRepository>();
+builder.Services.AddScoped<BooksServices>();
 
 var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET");
 

@@ -8,7 +8,7 @@ namespace Cibrary_Backend.Contexts;
 
 public class BooksDBContext : DbContext
 {
-    public DbSet<BookProfile> BookProfiles { get; set; }
+    public DbSet<BookProfile> Books { get; set; }
 
     public BooksDBContext(DbContextOptions<BooksDBContext> options)
           : base(options) { }
@@ -29,10 +29,6 @@ public class BooksDBContext : DbContext
     }
 
 
-    public async Task<int> FetchBookCount()
-    {
-        int booksCnt = await BookProfiles.CountAsync();
-        return booksCnt;
-    }
+
 
 }
