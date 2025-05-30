@@ -40,10 +40,23 @@ builder.Services.AddDbContext<UsersDBContext>(options =>
 
 builder.Services.AddDbContext<BooksDBContext>(options =>
     options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
+
+var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+        }
+    );
+});
+
 var app = builder.Build();
 
 
-
+app.UseCors(MyAllowSpecificOrigins);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
