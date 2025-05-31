@@ -83,8 +83,8 @@ namespace Cibrary_Backend.Controllers
         [Authorize]
         public async Task<ActionResult<UserProfile>> UpdateProfile(UserProfile user)
         {
-            var auth0User = User.FindFirst("authId")?.Value;
-            if (string.IsNullOrEmpty(auth0User) || user.auth0id == auth0User) return Unauthorized();
+            var auth0User = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            if (string.IsNullOrEmpty(auth0User) || user.auth0id != auth0User) return Unauthorized();
 
             if (ModelState.IsValid)
             {
@@ -101,7 +101,7 @@ namespace Cibrary_Backend.Controllers
         public async Task<ActionResult> RemoveProfile(UserProfile user)
         {
             var auth0User = User.FindFirst("authId")?.Value;
-            if (string.IsNullOrEmpty(auth0User) || user.auth0id == auth0User) return Unauthorized();
+            if (string.IsNullOrEmpty(auth0User) || user.auth0id != auth0User) return Unauthorized();
 
             if (ModelState.IsValid)
             {
