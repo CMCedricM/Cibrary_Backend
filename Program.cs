@@ -5,21 +5,38 @@ using Cibrary_Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Auth0Net.DependencyInjection;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+// Auth 0 Variables
+var AUTH0_DOMAIN = Environment.GetEnvironmentVariable("Auth0_Domain");
+var AUTH0_DOMAIN_FULL = $"https://{AUTH0_DOMAIN}/";
+var AUTH0_AUDIENCE=Environment.GetEnvironmentVariable("Auth0_Audience");
+var AUTH0_CLIENT_ID = Environment.GetEnvironmentVariable("Auth0_ClientId");
+var AUTH0_CLIENT_SECRET=Environment.GetEnvironmentVariable("Auth0_ClientSecret");
+
+// Auth0 JWT Setup
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
-    options.Authority = domain;
-    options.Audience = builder.Configuration["Auth0:Audience"];
+    options.Authority = AUTH0_DOMAIN_FULL;
+    options.Audience = AUTH0_AUDIENCE;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         NameClaimType = ClaimTypes.NameIdentifier
     };
 });
+
+// Mangement API
+builder.Services.AddAuth0AuthenticationClient(config =>
+{
+    config.Domain = AUTH0_DOMAIN;
+    config.ClientId = AUTH0_CLIENT_ID;
+    config.ClientSecret = AUTH0_CLIENT_SECRET;
+});
+builder.Services.AddAuth0ManagementClient().AddManagementAccessToken();
 
 // Add services to the container
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
@@ -52,6 +69,8 @@ builder.Services.AddCors(options =>
         }
     );
 });
+
+
 
 var app = builder.Build();
 
