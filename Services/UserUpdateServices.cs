@@ -3,22 +3,28 @@ using Auth0.ManagementApi.Models;
 
 namespace Cibrary_Backend.Services;
 
-public class UserUpdateServices
+public class UserUpdateAuth0Services
 {
     private readonly IManagementApiClient _managementApiClient;
 
-    public UserUpdateServices(IManagementApiClient managementApiClient)
+    public UserUpdateAuth0Services(IManagementApiClient managementApiClient)
     {
         _managementApiClient = managementApiClient;
     }
-    
-      public async Task<User> UpdateUserFullNameAsync(string userId, string newFullName)
+
+    public async Task<int> UpdateUserFullNameAsync(string userId, string newFullName)
     {
-        var newName = new UserUpdateRequest{
-           FullName = "Cedric Men"
+        var newName = new UserUpdateRequest
+        {
+            FullName = newFullName
         };
+        try
+        {
+            await _managementApiClient.Users.UpdateAsync(userId, newName);
+        }
+        catch (Exception e) { Console.WriteLine(e); }
+        
 
-
-        return await _managementApiClient.Users.UpdateAsync(userId, newName);
+        return 1;
     }
 }

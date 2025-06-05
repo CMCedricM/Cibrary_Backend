@@ -7,7 +7,7 @@ namespace Cibrary_Backend.Contexts;
 public class UsersDBContext : DbContext
 {
 
-    public DbSet<UserProfile> Users { get; set; }
+    public DbSet<UsersProfile> Users { get; set; }
 
     public UsersDBContext(DbContextOptions<UsersDBContext> options)
        : base(options) { }
@@ -23,7 +23,7 @@ public class UsersDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserProfile>().ToTable("users");
+        modelBuilder.Entity<UsersProfile>().ToTable("users");
     }
 
 

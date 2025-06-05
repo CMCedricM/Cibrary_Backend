@@ -13,10 +13,12 @@ namespace Cibrary_Backend.Controllers
     {
 
         private readonly UsersServices _userService;
+        private readonly UserUpdateAuth0Services _userUpdateService;
         private readonly string authId = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
-        public UsersController(UsersServices context)
+        public UsersController(UsersServices context, UserUpdateAuth0Services userContext)
         {
             _userService = context;
+            _userUpdateService = userContext;
         }
 
         // Debug Endpoints
@@ -33,7 +35,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpGet("hello")]
         [Authorize]
-        public ActionResult<UserProfile> hello()
+        public ActionResult<Auth0UserProfile> hello()
         {
             return Ok("Hello");
 
@@ -52,7 +54,7 @@ namespace Cibrary_Backend.Controllers
         // Real Endpoints Below //
 
         [HttpGet]
-        public async Task<ActionResult<UserProfile>> GetUserInfo(UserProfile user)
+        public async Task<ActionResult<UsersProfile>> GetUserInfo(UsersProfile user)
         {
             var auth0User = User.FindFirst(authId)?.Value;
             if (string.IsNullOrEmpty(auth0User) || auth0User != user.auth0id) return Unauthorized();
@@ -66,7 +68,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPost("createUser")]
         [Authorize]
-        public async Task<ActionResult<UserProfile>> CreateProfile(UserProfile profile)
+        public async Task<ActionResult<UsersProfile>> CreateProfile(UsersProfile profile)
         {
             if (!ModelState.IsValid) return BadRequest();
 
@@ -81,7 +83,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPost("updateUser")]
         [Authorize]
-        public async Task<ActionResult<UserProfile>> UpdateProfile(UserProfile user)
+        public async Task<ActionResult<UsersProfile>> UpdateProfile(UsersProfile user)
         {
             var auth0User = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(auth0User) || user.auth0id != auth0User) return Unauthorized();
@@ -89,6 +91,8 @@ namespace Cibrary_Backend.Controllers
             if (ModelState.IsValid)
             {
                 int success = await _userService.UpdateUserAsync(user);
+                // Submit the update to auth0
+                await _userUpdateService.UpdateUserFullNameAsync(auth0User, user.name);
                 if (success != -1) return Ok(user);
             }
 
@@ -98,7 +102,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpDelete("removeUser")]
         [Authorize]
-        public async Task<ActionResult> RemoveProfile(UserProfile user)
+        public async Task<ActionResult> RemoveProfile(UsersProfile user)
         {
             var auth0User = User.FindFirst("authId")?.Value;
             if (string.IsNullOrEmpty(auth0User) || user.auth0id != auth0User) return Unauthorized();

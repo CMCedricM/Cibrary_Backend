@@ -1,9 +1,11 @@
 CREATE TABLE Users (
   id serial Primary key,
-  auth0Id text,
-  UserName text,
-  Email text,
-  FirstName text,
+  auth0id text,
+  name text,
+  email text,
+  username text,
+  phone_number text,
+  FirstName text, 
   LastName text,
   LastLogin timestamp
 );

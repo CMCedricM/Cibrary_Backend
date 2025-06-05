@@ -12,7 +12,7 @@ public class UsersServices
 
     }
 
-    public async Task<UserProfile?> CreateUserAsync(UserProfile newUser)
+    public async Task<UsersProfile?> CreateUserAsync(UsersProfile newUser)
     {
         var user = await _respository.CreateNewUser(newUser);
         if (user != null)
@@ -22,21 +22,21 @@ public class UsersServices
         return user;
     }
 
-    public async Task<UserProfile?> GetUserAsync(UserProfile aUser)
+    public async Task<UsersProfile?> GetUserAsync(UsersProfile aUser)
     {
         var user = await _respository.GetUser(aUser);
 
         return user;
     }
 
-    public async Task<int> UpdateUserAsync(UserProfile aUser)
+    public async Task<int> UpdateUserAsync(UsersProfile aUser)
     {
         int status = await _respository.UpdateUser(aUser);
 
         return status;
     }
 
-    public async Task<int> RemoveUserAsync(UserProfile aUser)
+    public async Task<int> RemoveUserAsync(UsersProfile aUser)
     {
         int status = await _respository.RemoveUser(aUser);
 

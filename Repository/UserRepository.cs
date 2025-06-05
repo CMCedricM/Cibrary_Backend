@@ -15,7 +15,7 @@ public class UsersRepository
     }
 
 
-    public async Task<UserProfile?> GetUser(UserProfile user)
+    public async Task<UsersProfile?> GetUser(UsersProfile user)
     {
 
         var userInfo = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);
@@ -23,16 +23,11 @@ public class UsersRepository
         return userInfo;
     }
 
-    public async Task<UserProfile> CreateNewUser(UserProfile user)
+    public async Task<UsersProfile> CreateNewUser(UsersProfile user)
     {
         var checkUser = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);
         if (checkUser != null) return checkUser;
 
-        if (user.lastlogin == null)
-        {
-            var time = DateTime.UtcNow.ToUniversalTime();
-            user.lastlogin = time;
-        }
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -40,12 +35,13 @@ public class UsersRepository
         return user;
     }
 
-    public async Task<int> UpdateUser(UserProfile userProfile)
+    public async Task<int> UpdateUser(UsersProfile userProfile)
     {
         var user = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
+        Console.WriteLine(userProfile);
         if (user != null)
         {
-            var properties = typeof(UserProfile).GetProperties();
+            var properties = typeof(UsersProfile).GetProperties();
             foreach (var prop in properties)
             {
                 if (prop.Name != "id")
@@ -62,7 +58,7 @@ public class UsersRepository
         return 0;
     }
 
-    public async Task<int> RemoveUser(UserProfile userProfile)
+    public async Task<int> RemoveUser(UsersProfile userProfile)
     {
         var user = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
         if (user != null)
