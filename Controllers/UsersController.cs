@@ -92,7 +92,7 @@ namespace Cibrary_Backend.Controllers
             {
                 int success = await _userService.UpdateUserAsync(user);
                 // Submit the update to auth0
-                await _userUpdateService.UpdateUserFullNameAsync(auth0User, user.name);
+                await _userUpdateService.UpdateUserFullNameAsync(auth0User, user);
                 if (success != -1) return Ok(user);
             }
 

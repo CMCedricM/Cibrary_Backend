@@ -1,5 +1,6 @@
 using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
+using Cibrary_Backend.Models;
 
 namespace Cibrary_Backend.Services;
 
@@ -12,15 +13,16 @@ public class UserUpdateAuth0Services
         _managementApiClient = managementApiClient;
     }
 
-    public async Task<int> UpdateUserFullNameAsync(string userId, string newFullName)
+    public async Task<int> UpdateUserFullNameAsync(string userId, UsersProfile userInfo)
     {
-        var newName = new UserUpdateRequest
+        Console.WriteLine(userInfo);
+        var userUpdate = new UserUpdateRequest
         {
-            FullName = newFullName
+            FullName = userInfo.name
         };
         try
         {
-            await _managementApiClient.Users.UpdateAsync(userId, newName);
+            await _managementApiClient.Users.UpdateAsync(userId, userUpdate);
         }
         catch (Exception e) { Console.WriteLine(e); }
         
