@@ -22,9 +22,9 @@ public class UsersServices
         return user;
     }
 
-    public async Task<UsersProfile?> GetUserAsync(UsersProfile aUser)
+    public async Task<UsersProfile?> GetUserAsync(string userId)
     {
-        var user = await _respository.GetUser(aUser);
+        var user = await _respository.GetUser(userId);
 
         return user;
     }

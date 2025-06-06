@@ -15,10 +15,10 @@ public class UsersRepository
     }
 
 
-    public async Task<UsersProfile?> GetUser(UsersProfile user)
+    public async Task<UsersProfile?> GetUser(string userId)
     {
 
-        var userInfo = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);
+        var userInfo = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == userId);
 
         return userInfo;
     }

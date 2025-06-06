@@ -53,13 +53,13 @@ namespace Cibrary_Backend.Controllers
 
         // Real Endpoints Below //
 
-        [HttpGet]
-        public async Task<ActionResult<UsersProfile>> GetUserInfo(UsersProfile user)
+        [HttpGet("{auth0id}")]
+        public async Task<ActionResult<UsersProfile>> GetUserInfo([FromRoute]string auth0id)
         {
             var auth0User = User.FindFirst(authId)?.Value;
-            if (string.IsNullOrEmpty(auth0User) || auth0User != user.auth0id) return Unauthorized();
+            if (string.IsNullOrEmpty(auth0User) || auth0User != auth0id) return Unauthorized();
 
-            var userInfo = await _userService.GetUserAsync(user);
+            var userInfo = await _userService.GetUserAsync(auth0id);
             if (userInfo == null) return NotFound("User Not Found!");
 
             return Ok(userInfo);
@@ -72,7 +72,7 @@ namespace Cibrary_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            var checkUser = await _userService.GetUserAsync(profile);
+            var checkUser = await _userService.GetUserAsync(profile.auth0id);
             if (checkUser != null) return Conflict(new { message = "User already exists!" });
 
             await _userService.CreateUserAsync(profile);
