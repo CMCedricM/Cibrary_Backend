@@ -29,11 +29,11 @@ public class UsersServices
         return user;
     }
 
-    public async Task<int> UpdateUserAsync(UsersProfile aUser)
+    public async Task<UsersProfile?> UpdateUserAsync(UsersProfile aUser)
     {
-        int status = await _respository.UpdateUser(aUser);
+        var profileData = await _respository.UpdateUser(aUser);
 
-        return status;
+        return profileData;
     }
 
     public async Task<int> RemoveUserAsync(UsersProfile aUser)

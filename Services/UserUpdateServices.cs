@@ -1,3 +1,4 @@
+using Auth0.AuthenticationApi.Models;
 using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Cibrary_Backend.Models;
@@ -13,20 +14,29 @@ public class UserUpdateAuth0Services
         _managementApiClient = managementApiClient;
     }
 
-    public async Task<int> UpdateUserFullNameAsync(string userId, UsersProfile userInfo)
+    public async Task<Auth0.ManagementApi.Models.User?> UpdateUserFullNameAsync(string userId, UsersProfile userInfo)
     {
-        Console.WriteLine(userInfo);
-        var userUpdate = new UserUpdateRequest
-        {
-            FullName = userInfo.name
-        };
+        var currentUser = await _managementApiClient.Users.GetAsync(userId);
+        if (currentUser == null) return null;
+
         try
         {
-            await _managementApiClient.Users.UpdateAsync(userId, userUpdate);
-        }
-        catch (Exception e) { Console.WriteLine(e); }
-        
+            var userUpdate = new UserUpdateRequest
+            {
+                Email = userInfo.email,
+                FullName = userInfo.name
+            };
 
-        return 1;
+            var user = await _managementApiClient.Users.UpdateAsync(userId, userUpdate);
+            return user;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        return null;
+
+
     }
 }

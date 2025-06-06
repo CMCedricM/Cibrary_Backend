@@ -35,10 +35,9 @@ public class UsersRepository
         return user;
     }
 
-    public async Task<int> UpdateUser(UsersProfile userProfile)
+    public async Task<UsersProfile?> UpdateUser(UsersProfile userProfile)
     {
         var user = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
-        Console.WriteLine(userProfile);
         if (user != null)
         {
             var properties = typeof(UsersProfile).GetProperties();
@@ -51,11 +50,11 @@ public class UsersRepository
                 }
             }
         }
-        else return -1; //return error 
+        else return null ; //return error 
 
         await _context.SaveChangesAsync();
 
-        return 0;
+        return user;
     }
 
     public async Task<int> RemoveUser(UsersProfile userProfile)
