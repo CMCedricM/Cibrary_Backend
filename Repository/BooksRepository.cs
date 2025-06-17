@@ -1,5 +1,8 @@
 using Cibrary_Backend.Contexts;
+using Cibrary_Backend.Errors;
 using Cibrary_Backend.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 public class BooksRepository
@@ -18,9 +21,16 @@ public class BooksRepository
 
         return count;
     }
-    public async Task<BookProfile?> GetBook(string isbn)
+
+    public async Task<BookProfile?> GetBookById(int id)
     {
-        var getBook = await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
+        var aBook = await _context.Books.FirstOrDefaultAsync(b => id == b.ID);
+
+        return aBook;
+    }
+    public async Task<BookProfile?> GetBookByISBN(string isbn)
+    {
+        var getBook = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == isbn);
 
         return getBook;
 
@@ -28,12 +38,37 @@ public class BooksRepository
 
     public async Task<BookProfile> CreateBook(BookProfile book)
     {
-        var aBook = await GetBook(book.ISBN);
+        var aBook = await GetBookByISBN(book.Isbn);
         if (aBook != null) return aBook;
 
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
         return book;
+    }
+
+    public async Task<BookProfile?> UpdateBook(int id, BookProfile book)
+    {
+        var aBook = await GetBookById(id);
+        if (aBook == null) return null;
+
+        var properties = typeof(BookProfile).GetProperties();
+
+        foreach (var prop in properties)
+        {
+            if (prop.Name.Equals("id", StringComparison.OrdinalIgnoreCase) ||
+            prop.Name.Equals("isbn", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ForbiddenFieldException($"Atempted to update illegal fields ${prop.Name}", [prop.Name]);
+            }
+
+            var newValue = prop.GetValue(book);
+            if (newValue != null) prop.SetValue(aBook, newValue);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return aBook;
+
     }
 }

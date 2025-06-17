@@ -2,6 +2,7 @@
 using Cibrary_Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Cibrary_Backend.Errors;
 
 namespace Cibrary_Backend.Controllers
 {
@@ -16,25 +17,27 @@ namespace Cibrary_Backend.Controllers
             _context = context;
         }
 
+
         private readonly BookProfile[] books =
         {
             new BookProfile
             {
                 Title = "I am book",
-                ISBN = "217316328",
-                id = 1,
+                Isbn = "217316328",
+                ID = 1,
                 TotalCnt = 0,
             },
              new BookProfile
             {
                 Title = "I am book",
-                ISBN = "217316328",
-                id = 2,
+                Isbn = "217316328",
+                ID = 2,
                 TotalCnt = 80,
             },
         };
 
         [HttpGet("count")]
+        [Authorize]
         public async Task<ActionResult<int>> GetCount()
         {
 
@@ -42,7 +45,51 @@ namespace Cibrary_Backend.Controllers
             return Ok(cnt);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BookProfile?>> GetBookById([FromRoute] int id)
+        {
+            var aBook = await _context.GetBookById(id);
 
+            if (aBook == null) return NotFound();
+
+            return Ok(aBook);
+        }
+
+        [HttpGet("/isbn/{isbn}")]
+        public async Task<ActionResult<BookProfile?>> GetBookByISBN(string isbn)
+        {
+            var aBook = await _context.GetBookByISBN(isbn);
+
+            if (aBook == null) return NotFound();
+
+            return Ok(aBook);
+        }
+
+        [HttpPost("createABook")]
+        [Authorize]
+        public async Task<ActionResult<BookProfile>> CreateABook(BookProfile book)
+        {
+            var newBook = await _context.CreateBookAsync(book);
+
+            return Ok(newBook);
+        }
+
+        [HttpPatch("{id}")]
+        [Authorize]
+        public async Task<ActionResult<BookProfile>> UpdateABook(int id, [FromBody] BookProfile req)
+        {
+
+            try
+            {
+                var updatedBook = await _context.UpdateBook(id, req);
+                return Ok(updatedBook);
+            }
+            catch (ForbiddenFieldException err)
+            {
+                return BadRequest(err.Message);
+            }
+
+        }
 
 
     }

@@ -9,10 +9,10 @@ namespace Cibrary_Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int id { get; set; }
+        public int ID { get; set; }
         [Column("isbn")]
         [Required]
-        public string ISBN { get; set; } = string.Empty;
+        public string Isbn { get; set; } = string.Empty;
         [Column("title")]
         public string Title { get; set; } = string.Empty;
         [Column("releasedate")]
@@ -21,5 +21,7 @@ namespace Cibrary_Backend.Models
         public int AvailabilityCnt { get; set; } = 0;
         [Column("totalcnt")]
         public int TotalCnt { get; set; } = 0;
+        [Column("description")]
+        public string Description { get; set; } = String.Empty;
     }
 }
