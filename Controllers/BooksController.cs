@@ -20,20 +20,18 @@ namespace Cibrary_Backend.Controllers
         {
             new BookProfile
             {
-                BookTitle = "I am book",
+                Title = "I am book",
                 ISBN = "217316328",
-                ID = 1,
-                Description = "Description",
-                TotalAmt = 0,
+                id = 1,
+                TotalCnt = 0,
             },
-            new BookProfile
+             new BookProfile
             {
-                BookTitle = "I am book 2",
-                ISBN = "217316328 - 2",
-                ID = 80,
-                Description = "Description",
-                TotalAmt = 20,
-            }
+                Title = "I am book",
+                ISBN = "217316328",
+                id = 2,
+                TotalCnt = 80,
+            },
         };
 
         [HttpGet("count")]
