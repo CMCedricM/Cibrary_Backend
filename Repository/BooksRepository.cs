@@ -72,4 +72,12 @@ public class BooksRepository
         return aBook;
 
     }
+
+
+    public async Task<List<BookProfile>> FindBook(string item)
+    {
+        var books = await _context.Books.Where(p => EF.Functions.ILike(p.Title, $"%{item}%")).ToListAsync();
+
+        return books;
+    }
 }

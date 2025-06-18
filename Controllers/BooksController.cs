@@ -52,25 +52,6 @@ namespace Cibrary_Backend.Controllers
             return Ok(books);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<BookProfile?>> GetBookById([FromRoute] int id)
-        {
-            var aBook = await _context.GetBookById(id);
-
-            if (aBook == null) return NotFound();
-
-            return Ok(aBook);
-        }
-
-        [HttpGet("/isbn/{isbn}")]
-        public async Task<ActionResult<BookProfile?>> GetBookByISBN(string isbn)
-        {
-            var aBook = await _context.GetBookByISBN(isbn);
-
-            if (aBook == null) return NotFound();
-
-            return Ok(aBook);
-        }
 
         [HttpPost("createABook")]
         [Authorize]
@@ -86,6 +67,37 @@ namespace Cibrary_Backend.Controllers
                 return Conflict(c.ToErrorResponse());
             }
 
+        }
+
+        [HttpGet("search")]
+        [Authorize]
+        public async Task<ActionResult<List<BookProfile>>> FindABook([FromQuery] string query)
+        {
+            var res = await _context.FindABook(query);
+
+            return res;
+        }
+
+
+        [HttpGet("/isbn/{isbn}")]
+        public async Task<ActionResult<BookProfile?>> GetBookByISBN(string isbn)
+        {
+            var aBook = await _context.GetBookByISBN(isbn);
+
+            if (aBook == null) return NotFound();
+
+            return Ok(aBook);
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BookProfile?>> GetBookById([FromRoute] int id)
+        {
+            var aBook = await _context.GetBookById(id);
+
+            if (aBook == null) return NotFound();
+
+            return Ok(aBook);
         }
 
         [HttpPatch("{id}")]
@@ -104,7 +116,6 @@ namespace Cibrary_Backend.Controllers
             }
 
         }
-
 
     }
 }
