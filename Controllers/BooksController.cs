@@ -45,6 +45,13 @@ namespace Cibrary_Backend.Controllers
             return Ok(cnt);
         }
 
+        [HttpGet("test")]
+        [Authorize]
+        public ActionResult<BookProfile[]> GetTestBooks()
+        {
+            return Ok(books);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<BookProfile?>> GetBookById([FromRoute] int id)
         {

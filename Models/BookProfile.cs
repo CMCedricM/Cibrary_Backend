@@ -16,7 +16,7 @@ namespace Cibrary_Backend.Models
         [Column("title")]
         public string Title { get; set; } = string.Empty;
         [Column("releasedate")]
-        public DateTime? ReleaseDate { get; set; } = DateTime.Now;
+        public DateTime? ReleaseDate { get; set; } = DateTime.UtcNow;
         [Column("availabilitycnt")]
         public int AvailabilityCnt { get; set; } = 0;
         [Column("totalcnt")]
