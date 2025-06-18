@@ -39,7 +39,8 @@ public class BooksRepository
     public async Task<BookProfile> CreateBook(BookProfile book)
     {
         var aBook = await GetBookByISBN(book.Isbn);
-        if (aBook != null) return aBook;
+        if (aBook != null) throw new ConflictFound($"{(book.Title != string.Empty ? book.Title : "book")} with {book.Isbn} exists ",
+         book.Isbn, book.Title);
 
         _context.Books.Add(book);
         await _context.SaveChangesAsync();

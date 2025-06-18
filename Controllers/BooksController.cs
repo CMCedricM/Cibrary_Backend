@@ -76,9 +76,16 @@ namespace Cibrary_Backend.Controllers
         [Authorize]
         public async Task<ActionResult<BookProfile>> CreateABook(BookProfile book)
         {
-            var newBook = await _context.CreateBookAsync(book);
+            try
+            {
+                var newBook = await _context.CreateBookAsync(book);
+                return Ok(newBook);
+            }
+            catch (ConflictFound c)
+            {
+                return Conflict(c.ToErrorResponse());
+            }
 
-            return Ok(newBook);
         }
 
         [HttpPatch("{id}")]
@@ -93,7 +100,7 @@ namespace Cibrary_Backend.Controllers
             }
             catch (ForbiddenFieldException err)
             {
-                return BadRequest(err.Message);
+                return BadRequest(err.ToErrorResponse());
             }
 
         }
