@@ -74,10 +74,21 @@ public class BooksRepository
     }
 
 
-    public async Task<List<BookProfile>> FindBook(string item)
+    public async Task<List<BookProfile>?> FindBook(BookSearch item)
     {
-        var books = await _context.Books.Where(p => EF.Functions.ILike(p.Title, $"%{item}%")).ToListAsync();
+        if (!string.IsNullOrWhiteSpace(item.Isbn))
+        {
 
-        return books;
+            var query = await _context.Books.Where(p => EF.Functions.ILike(p.Isbn, $"%{item.Isbn}%")).ToListAsync();
+            return query;
+        }
+        if (!string.IsNullOrWhiteSpace(item.Title))
+        {
+            var query = await _context.Books.Where(p => EF.Functions.ILike(p.Title, $"%{item.Title}%")).ToListAsync();
+            return query;
+        }
+
+        return null;
+
     }
 }

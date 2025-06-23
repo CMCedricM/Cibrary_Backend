@@ -58,7 +58,7 @@ public class BooksServices
 
     }
 
-    public async Task<List<BookProfile>> FindABook(string item)
+    public async Task<List<BookProfile>?> FindABook(BookSearch item)
     {
         var results = await _repository.FindBook(item);
 

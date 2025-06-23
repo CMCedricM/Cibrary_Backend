@@ -72,9 +72,11 @@ namespace Cibrary_Backend.Controllers
 
         [HttpGet("search")]
         [Authorize]
-        public async Task<ActionResult<List<BookProfile>>> FindABook([FromQuery] string query)
+        public async Task<ActionResult<List<BookProfile>?>> FindABookTitle([FromQuery] BookSearch query)
         {
+
             var res = await _context.FindABook(query);
+            if (res == null) return NotFound("No Books Matching Found!");
 
             return res;
         }

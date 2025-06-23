@@ -24,4 +24,10 @@ namespace Cibrary_Backend.Models
         [Column("description")]
         public string Description { get; set; } = String.Empty;
     }
+
+    public class BookSearch
+    {
+        public string Isbn { get; set; } = String.Empty;
+        public string Title { get; set; } = String.Empty;
+    }
 }
