@@ -13,6 +13,8 @@ services:
       - "8081:8081"
     depends_on:
       - db
+    restart: unless-stopped
+
   db:
     image: postgres:latest
     environment:
@@ -24,3 +26,4 @@ services:
     volumes:
       - ./databases/postgres_data:/var/lib/postgresql/data
       - ./sql_scripts/createDatabase.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    restart: unless-stopped

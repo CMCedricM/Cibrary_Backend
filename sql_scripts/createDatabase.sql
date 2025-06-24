@@ -16,7 +16,8 @@ CREATE TABLE Books(
   Title text,
   ReleaseDate timestamp null,
   AvailabilityCnt integer,
-  TotalCnt integer
+  TotalCnt integer,
+  description text
 );
 
 CREATE TYPE book_status AS ENUM ('returned', 'checked_out', 'overdue');

@@ -1,11 +1,33 @@
-﻿namespace Cibrary_Backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Cibrary_Backend.Models
 {
     public class BookProfile
     {
-        public string ISBN { get; set; } = string.Empty;
-        public string BookTitle { get; set; } = string.Empty;
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id")]
         public int ID { get; set; }
-        public string Description { get; set;} = string.Empty;
-        public int TotalAmt { get; set; } = -1; 
+        [Column("isbn")]
+        [Required]
+        public string Isbn { get; set; } = string.Empty;
+        [Column("title")]
+        public string Title { get; set; } = string.Empty;
+        [Column("releasedate")]
+        public DateTime? ReleaseDate { get; set; } = DateTime.UtcNow;
+        [Column("availabilitycnt")]
+        public int AvailabilityCnt { get; set; } = 0;
+        [Column("totalcnt")]
+        public int TotalCnt { get; set; } = 0;
+        [Column("description")]
+        public string Description { get; set; } = String.Empty;
+    }
+
+    public class BookSearch
+    {
+        public string Isbn { get; set; } = String.Empty;
+        public string Title { get; set; } = String.Empty;
     }
 }
