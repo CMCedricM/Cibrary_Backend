@@ -13,9 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Auth 0 Variables
 var AUTH0_DOMAIN = Environment.GetEnvironmentVariable("Auth0_Domain");
 var AUTH0_DOMAIN_FULL = $"https://{AUTH0_DOMAIN}/";
-var AUTH0_JWT_AUDIENCE=Environment.GetEnvironmentVariable("Auth0_JWT_Audience");
+var AUTH0_JWT_AUDIENCE = Environment.GetEnvironmentVariable("Auth0_JWT_Audience");
 var AUTH0_CLIENT_ID = Environment.GetEnvironmentVariable("Auth0_ClientId");
-var AUTH0_CLIENT_SECRET=Environment.GetEnvironmentVariable("Auth0_ClientSecret");
+var AUTH0_CLIENT_SECRET = Environment.GetEnvironmentVariable("Auth0_ClientSecret");
 var AUTH0_AUDIENCE_MANAGEMENT = Environment.GetEnvironmentVariable("Auth0_Management_Audience");
 // Auth0 JWT Setup
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -69,7 +69,7 @@ builder.Services.AddDbContext<UsersDBContext>(options =>
 builder.Services.AddDbContext<BooksDBContext>(options =>
     options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
 
-var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
@@ -77,6 +77,7 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            builder.WithOrigins("https://cibrary.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         }
     );
 });
