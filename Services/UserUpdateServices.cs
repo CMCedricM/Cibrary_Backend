@@ -21,10 +21,12 @@ public class UserUpdateAuth0Services
 
         try
         {
+            // Always check fro email update 
             var userUpdate = new UserUpdateRequest
             {
                 Email = userInfo.email,
-                FullName = userInfo.name
+                FullName = userInfo.name,
+                EmailVerified = false,
             };
 
             var user = await _managementApiClient.Users.UpdateAsync(userId, userUpdate);
