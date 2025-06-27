@@ -1,6 +1,9 @@
+CREATE TYPE user_status AS ENUM ('basic', 'admin', 'founder');
+
 CREATE TABLE Users (
   id serial Primary key,
   auth0id text,
+  role user_status default 'basic',
   name text,
   email text,
   username text,
@@ -20,7 +23,7 @@ CREATE TABLE Books(
   description text
 );
 
-CREATE TYPE book_status AS ENUM ('returned', 'checked_out', 'overdue');
+CREATE TYPE book_status AS ENUM ('returned', 'checked_out', 'overdue', 'pending');
 
 CREATE TABLE Circulation(
   id serial Primary key, 
@@ -29,7 +32,7 @@ CREATE TABLE Circulation(
   Checkout_Date timestamp,
   Due_Date timestamp,
   Return_Date timestamp null,
-  Status book_status default 'checked_out',
+  Status book_status default 'pending',
   CONSTRAINT fk_User FOREIGN KEY (User_Id)
   REFERENCES Users(id),
   CONSTRAINT fk_Books FOREIGN KEY (Book_Id) 
@@ -38,3 +41,4 @@ CREATE TABLE Circulation(
 
 CREATE INDEX idx_user_emails ON Users(Email);
 CREATE INDEX idx_isbn_number ON Books(ISBN);
+CREATE INDEX idx_user_role ON Users(role);
