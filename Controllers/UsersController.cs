@@ -104,9 +104,14 @@ namespace Cibrary_Backend.Controllers
         [Authorize]
         public async Task<ActionResult> RemoveProfile(UsersProfile user)
         {
-            var auth0User = User.FindFirst("authId")?.Value;
-            if (string.IsNullOrEmpty(auth0User) || user.auth0id != auth0User) return Unauthorized();
+            var auth0User = User.FindFirst(authId)?.Value;
+            if (string.IsNullOrEmpty(auth0User) ||user.auth0id != auth0User) return Unauthorized();
 
+
+            // Also check role is ok
+            var userRole = await _userService.GetUserAsync(auth0User);
+            if (userRole == null || userRole.role != UserStatus.founder) return Unauthorized();
+            
             if (ModelState.IsValid)
             {
                 int success = await _userService.RemoveUserAsync(user);
