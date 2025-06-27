@@ -110,8 +110,8 @@ namespace Cibrary_Backend.Controllers
 
             // Also check role is ok
             var userRole = await _userService.GetUserAsync(auth0User);
-            if (userRole == null || userRole.role != UserStatus.founder) return Unauthorized();
-            
+            if (userRole == null || userRole.role != UserRole.founder) return Unauthorized();
+
             if (ModelState.IsValid)
             {
                 int success = await _userService.RemoveUserAsync(user);

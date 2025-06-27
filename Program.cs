@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Auth0Net.DependencyInjection;
+using Cibrary_Backend.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,7 +65,7 @@ builder.Services.AddHttpClient();
 var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET");
 
 builder.Services.AddDbContext<UsersDBContext>(options =>
-    options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
+    options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing"), o => o.MapEnum<UserRole>("user_status")));
 
 builder.Services.AddDbContext<BooksDBContext>(options =>
     options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));

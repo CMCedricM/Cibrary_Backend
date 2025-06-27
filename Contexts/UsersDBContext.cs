@@ -23,7 +23,9 @@ public class UsersDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresEnum<UserRole>();
         modelBuilder.Entity<UsersProfile>().ToTable("users");
+        modelBuilder.Entity<UsersProfile>().Property(r => r.role);
     }
 
 

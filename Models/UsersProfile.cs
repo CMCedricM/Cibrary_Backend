@@ -1,6 +1,6 @@
 namespace Cibrary_Backend.Models;
 
-public enum UserStatus
+public enum UserRole
 {
     basic, admin, founder
 }
@@ -11,5 +11,5 @@ public class UsersProfile : Auth0UserProfile
     public string lastname { get; set; } = string.Empty;
     public DateTime lastlogin { get; set; }
 
-    public UserStatus role { get; set; } = UserStatus.basic;
+    public UserRole role { get; set; } = UserRole.basic;
 }
