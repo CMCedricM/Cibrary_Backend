@@ -77,8 +77,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-            builder.WithOrigins("https://cibrary.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            builder.WithOrigins("http://localhost:3000", "http://localhost:7071", "https://cibrary.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         }
     );
 });
