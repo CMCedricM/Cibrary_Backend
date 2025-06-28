@@ -22,14 +22,14 @@ public class Circulation
     public int UserId { get; set; }
 
     [ForeignKey("UserId")]
-    public UsersProfile User { get; set; } = null!;
+    public User User { get; set; } = null!;
 
     [Required]
     [Column("book_id")]
     public int BookId { get; set; }
 
     [ForeignKey("BookId")]
-    public BookProfile Book { get; set; } = null!;
+    public Book Book { get; set; } = null!;
 
     [Column("checkout_date")]
     public DateTime? CheckoutDate { get; set; }

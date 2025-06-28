@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cibrary_Backend.Contexts;
 
-public class UsersDBContext : DbContext
+public class UserDBContext : DbContext
 {
 
-    public DbSet<UsersProfile> Users { get; set; }
+    public DbSet<User> Users { get; set; }
 
-    public UsersDBContext(DbContextOptions<UsersDBContext> options)
+    public UserDBContext(DbContextOptions<UserDBContext> options)
        : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,8 +24,8 @@ public class UsersDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresEnum<UserRole>();
-        modelBuilder.Entity<UsersProfile>().ToTable("users");
-        modelBuilder.Entity<UsersProfile>().Property(r => r.role);
+        modelBuilder.Entity<User>().ToTable("users");
+        modelBuilder.Entity<User>().Property(r => r.role);
     }
 
 

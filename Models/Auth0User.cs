@@ -2,7 +2,7 @@
 
 namespace Cibrary_Backend.Models
 {
-    public class Auth0UserProfile
+    public class Auth0User
     {
         [Key]
         public int id { get; set; }

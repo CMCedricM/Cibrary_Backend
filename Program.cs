@@ -51,25 +51,33 @@ builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializ
 builder.Services.AddOpenApi();
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Services.AddScoped<UsersRepository>();
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UsersServices>();
+builder.Services.AddScoped<UserUpdateAuth0Services>();
 
 builder.Services.AddScoped<BooksRepository>();
 builder.Services.AddScoped<BooksServices>();
 
+builder.Services.AddScoped<CirculationRepository>();
+builder.Services.AddScoped<CirculationServices>();
 
-builder.Services.AddScoped<UserUpdateAuth0Services>();
 
 builder.Services.AddHttpClient();
 
-var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET");
+// Database contexts
+var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET") ?? throw new InvalidOperationException("Database string missing");
 
-builder.Services.AddDbContext<UsersDBContext>(options =>
-    options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing"), o => o.MapEnum<UserRole>("user_status")));
+builder.Services.AddDbContext<UserDBContext>(options =>
+    options.UseNpgsql(connectString, o => o.MapEnum<UserRole>("user_status")));
 
-builder.Services.AddDbContext<BooksDBContext>(options =>
-    options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
+builder.Services.AddDbContext<BookDBContext>(options =>
+    options.UseNpgsql(connectString));
 
+builder.Services.AddDbContext<CirculationDBContext>(options =>
+options.UseNpgsql(connectString, o => o.MapEnum<BookStatus>("book_status")));
+
+
+// Cors Rules
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>

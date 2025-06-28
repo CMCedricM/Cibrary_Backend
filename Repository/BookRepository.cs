@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class BooksRepository
 {
-    private readonly BooksDBContext _context;
+    private readonly BookDBContext _context;
 
 
-    public BooksRepository(BooksDBContext context)
+    public BooksRepository(BookDBContext context)
     {
         _context = context;
     }
@@ -22,13 +22,13 @@ public class BooksRepository
         return count;
     }
 
-    public async Task<BookProfile?> GetBookById(int id)
+    public async Task<Book?> GetBookById(int id)
     {
         var aBook = await _context.Books.FirstOrDefaultAsync(b => id == b.ID);
 
         return aBook;
     }
-    public async Task<BookProfile?> GetBookByISBN(string isbn)
+    public async Task<Book?> GetBookByISBN(string isbn)
     {
         var getBook = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == isbn);
 
@@ -36,7 +36,7 @@ public class BooksRepository
 
     }
 
-    public async Task<BookProfile> CreateBook(BookProfile book)
+    public async Task<Book> CreateBook(Book book)
     {
         var aBook = await GetBookByISBN(book.Isbn);
         if (aBook != null) throw new ConflictFound($"{(book.Title != string.Empty ? book.Title : "book")} with {book.Isbn} exists ",
@@ -48,12 +48,12 @@ public class BooksRepository
         return book;
     }
 
-    public async Task<BookProfile?> UpdateBook(int id, BookProfile book)
+    public async Task<Book?> UpdateBook(int id, Book book)
     {
         var aBook = await GetBookById(id);
         if (aBook == null) return null;
 
-        var properties = typeof(BookProfile).GetProperties();
+        var properties = typeof(Book).GetProperties();
 
         foreach (var prop in properties)
         {
@@ -74,7 +74,7 @@ public class BooksRepository
     }
 
 
-    public async Task<List<BookProfile>?> FindBook(BookSearch item)
+    public async Task<List<Book>?> FindBook(BookSearch item)
     {
         if (!string.IsNullOrWhiteSpace(item.Isbn))
         {

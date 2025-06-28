@@ -19,16 +19,16 @@ namespace Cibrary_Backend.Controllers
         }
 
 
-        private readonly BookProfile[] books =
+        private readonly Book[] books =
         {
-            new BookProfile
+            new Book
             {
                 Title = "I am book",
                 Isbn = "217316328",
                 ID = 1,
                 TotalCnt = 0,
             },
-             new BookProfile
+             new Book
             {
                 Title = "I am book",
                 Isbn = "217316328",
@@ -48,7 +48,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpGet("test")]
         [Authorize]
-        public ActionResult<BookProfile[]> GetTestBooks()
+        public ActionResult<Book[]> GetTestBooks()
         {
             return Ok(books);
         }
@@ -56,7 +56,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPost("createABook")]
         [Authorize]
-        public async Task<ActionResult<BookProfile>> CreateABook(BookProfile book)
+        public async Task<ActionResult<Book>> CreateABook(Book book)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpGet("search")]
         [Authorize]
-        public async Task<ActionResult<List<BookProfile>?>> FindABookTitle([FromQuery] BookSearch query)
+        public async Task<ActionResult<List<Book>?>> FindABookTitle([FromQuery] BookSearch query)
         {
 
             var res = await _context.FindABook(query);
@@ -83,7 +83,7 @@ namespace Cibrary_Backend.Controllers
 
 
         [HttpGet("/isbn/{isbn}")]
-        public async Task<ActionResult<BookProfile?>> GetBookByISBN(string isbn)
+        public async Task<ActionResult<Book?>> GetBookByISBN(string isbn)
         {
             var aBook = await _context.GetBookByISBN(isbn);
 
@@ -94,7 +94,7 @@ namespace Cibrary_Backend.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<BookProfile?>> GetBookById([FromRoute] int id)
+        public async Task<ActionResult<Book?>> GetBookById([FromRoute] int id)
         {
             var aBook = await _context.GetBookById(id);
 
@@ -105,7 +105,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<ActionResult<BookProfile>> UpdateABook(int id, [FromBody] BookProfile req)
+        public async Task<ActionResult<Book>> UpdateABook(int id, [FromBody] Book req)
         {
 
             try

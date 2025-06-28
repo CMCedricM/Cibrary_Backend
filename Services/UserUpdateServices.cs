@@ -14,7 +14,7 @@ public class UserUpdateAuth0Services
         _managementApiClient = managementApiClient;
     }
 
-    public async Task<Auth0.ManagementApi.Models.User?> UpdateUserFullNameAsync(string userId, UsersProfile userInfo)
+    public async Task<Auth0.ManagementApi.Models.User?> UpdateUserFullNameAsync(string userId, Models.User userInfo)
     {
         var currentUser = await _managementApiClient.Users.GetAsync(userId);
         if (currentUser == null) return null;

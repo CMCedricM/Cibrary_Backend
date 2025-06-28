@@ -5,7 +5,7 @@ public enum UserRole
     basic, admin, founder
 }
 
-public class UsersProfile : Auth0UserProfile
+public class User : Auth0User
 {
     public string firstname { get; set; } = string.Empty;
     public string lastname { get; set; } = string.Empty;
@@ -15,7 +15,7 @@ public class UsersProfile : Auth0UserProfile
 }
 
 
-public class UsersSearch 
+public class UsersSearch
 {
     public UserRole Role { get; set; }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cibrary_Backend.Models
 {
-    public class BookProfile
+    public class Book
     {
 
         [Key]

@@ -47,7 +47,7 @@ namespace Cibrary_Backend.Controllers
         // Real Endpoints Below //
 
         [HttpGet("{auth0id}")]
-        public async Task<ActionResult<UsersProfile>> GetUserInfo([FromRoute] string auth0id)
+        public async Task<ActionResult<User>> GetUserInfo([FromRoute] string auth0id)
         {
             var auth0User = User.FindFirst(authId)?.Value;
             if (string.IsNullOrEmpty(auth0User) || auth0User != auth0id) return Unauthorized();
@@ -61,7 +61,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPost("createUser")]
         [Authorize]
-        public async Task<ActionResult<UsersProfile>> CreateProfile(UsersProfile profile)
+        public async Task<ActionResult<User>> CreateProfile(User profile)
         {
             if (!ModelState.IsValid) return BadRequest();
 
@@ -76,7 +76,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPost("updateUser")]
         [Authorize]
-        public async Task<ActionResult<UsersProfile>> UpdateProfile(UsersProfile user)
+        public async Task<ActionResult<User>> UpdateProfile(User user)
         {
             var auth0User = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(auth0User) || user.auth0id != auth0User) return Unauthorized();
@@ -95,7 +95,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpDelete("removeUser")]
         [Authorize]
-        public async Task<ActionResult> RemoveProfile(UsersProfile user)
+        public async Task<ActionResult> RemoveProfile(User user)
         {
             var auth0User = User.FindFirst(authId)?.Value;
             if (string.IsNullOrEmpty(auth0User) || user.auth0id != auth0User) return Unauthorized();
@@ -119,7 +119,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpGet("getUsers")]
         [Authorize]
-        public async Task<ActionResult<List<UsersProfile>>> GetUserProfiles([FromQuery] UsersSearch query)
+        public async Task<ActionResult<List<User>>> GetUserProfiles([FromQuery] UsersSearch query)
         {
             var auth0User = User.FindFirst(authId)?.Value;
             if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
@@ -134,7 +134,7 @@ namespace Cibrary_Backend.Controllers
 
         }
 
- 
+
 
 
     }
