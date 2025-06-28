@@ -23,6 +23,16 @@ public class UsersRepository
         return userInfo;
     }
 
+    public async Task<List<UsersProfile>?> GetUsers(UsersSearch query)
+    {
+        if (!string.IsNullOrWhiteSpace(query.Role.ToString()))
+        {
+            var userData = await _context.Users.Where(p => p.role == query.Role).ToListAsync();
+            return userData;
+        }
+
+        return null;
+}
     public async Task<UsersProfile> CreateNewUser(UsersProfile user)
     {
         var checkUser = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);

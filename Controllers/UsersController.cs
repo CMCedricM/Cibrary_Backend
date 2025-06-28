@@ -33,28 +33,21 @@ namespace Cibrary_Backend.Controllers
             });
         }
 
-        [HttpGet("hello")]
-        [Authorize]
-        public ActionResult<Auth0UserProfile> hello()
-        {
-            return Ok("Hello");
 
-        }
-
-        [Authorize]
-        [HttpGet("debugClaims")]
-        public IActionResult DebugClaims()
-        {
-            var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
-            return Ok(claims);
-        }
+        // [Authorize]
+        // [HttpGet("debugClaims")]
+        // public IActionResult DebugClaims()
+        // {
+        //     var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+        //     return Ok(claims);
+        // }
 
 
 
         // Real Endpoints Below //
 
         [HttpGet("{auth0id}")]
-        public async Task<ActionResult<UsersProfile>> GetUserInfo([FromRoute]string auth0id)
+        public async Task<ActionResult<UsersProfile>> GetUserInfo([FromRoute] string auth0id)
         {
             var auth0User = User.FindFirst(authId)?.Value;
             if (string.IsNullOrEmpty(auth0User) || auth0User != auth0id) return Unauthorized();
@@ -105,7 +98,7 @@ namespace Cibrary_Backend.Controllers
         public async Task<ActionResult> RemoveProfile(UsersProfile user)
         {
             var auth0User = User.FindFirst(authId)?.Value;
-            if (string.IsNullOrEmpty(auth0User) ||user.auth0id != auth0User) return Unauthorized();
+            if (string.IsNullOrEmpty(auth0User) || user.auth0id != auth0User) return Unauthorized();
 
 
             // Also check role is ok
@@ -124,6 +117,24 @@ namespace Cibrary_Backend.Controllers
 
         }
 
+        [HttpGet("getUsers")]
+        [Authorize]
+        public async Task<ActionResult<List<UsersProfile>>> GetUserProfiles([FromQuery] UsersSearch query)
+        {
+            var auth0User = User.FindFirst(authId)?.Value;
+            if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
+
+            var checkRole = await _userService.GetUserAsync(auth0User);
+            if (checkRole == null || checkRole.role != UserRole.admin) return Unauthorized();
+
+            // Now actually fetch the data
+            var usersData = await _userService.GetUsersAsync(query);
+
+            return Ok(usersData);
+
+        }
+
+ 
 
 
     }

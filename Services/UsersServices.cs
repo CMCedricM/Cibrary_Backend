@@ -29,6 +29,13 @@ public class UsersServices
         return user;
     }
 
+    public async Task<List<UsersProfile>?> GetUsersAsync(UsersSearch query)
+    {
+        var userResults = await _respository.GetUsers(query);
+
+        return userResults;
+    }
+
     public async Task<UsersProfile?> UpdateUserAsync(UsersProfile aUser)
     {
         var profileData = await _respository.UpdateUser(aUser);

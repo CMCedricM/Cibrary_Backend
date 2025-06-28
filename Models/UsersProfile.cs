@@ -13,3 +13,9 @@ public class UsersProfile : Auth0UserProfile
 
     public UserRole role { get; set; } = UserRole.basic;
 }
+
+
+public class UsersSearch 
+{
+    public UserRole Role { get; set; }
+}
