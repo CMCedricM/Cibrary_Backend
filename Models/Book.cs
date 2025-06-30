@@ -20,6 +20,10 @@ namespace Cibrary_Backend.Models
         public string Title { get; set; } = string.Empty;
         [Column("releasedate")]
         public DateTime? ReleaseDate { get; set; } = DateTime.UtcNow;
+
+        [Column("created_at")]
+        public DateTime Created_At { get; set; } = DateTime.UtcNow;
+
         [Column("availabilitycnt")]
         public int AvailabilityCnt { get; set; } = 0;
         [Column("totalcnt")]

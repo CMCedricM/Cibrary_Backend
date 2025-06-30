@@ -24,7 +24,7 @@ public class BooksRepository
 
     public async Task<Book?> GetBookById(string id)
     {
-        var aBook = await _context.Books.AsNoTracking().FirstOrDefaultAsync(b => id == b.ID);
+        var aBook = await _context.Books.FirstOrDefaultAsync(b => id == b.ID);
 
         return aBook;
     }
@@ -42,9 +42,13 @@ public class BooksRepository
         if (aBook != null) throw new ConflictFound($"{(book.Title != string.Empty ? book.Title : "book")} with {book.Isbn} exists ",
          book.Isbn, book.Title);
 
-        _context.Books.Add(book);
-        await _context.SaveChangesAsync();
 
+
+        for (int i = 0; i < book.AvailabilityCnt; i++)
+        {
+            await _context.Books.AddAsync(book);
+            await _context.SaveChangesAsync();
+        }
         return book;
     }
 
