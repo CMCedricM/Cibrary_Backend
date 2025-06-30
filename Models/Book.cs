@@ -7,9 +7,12 @@ namespace Cibrary_Backend.Models
     {
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("id")]
-        public int ID { get; set; }
+        public string ID { get; set; } = string.Empty;
+
+        [Column("uuid")]
+        public Guid? Uuid { get; set; }
         [Column("isbn")]
         [Required]
         public string Isbn { get; set; } = string.Empty;

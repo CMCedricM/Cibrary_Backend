@@ -17,4 +17,9 @@ public class CirculationRepository
         var booksCirculation = await _context.Circulation.Where(p => p.BookStatus == BookStatus.pending).ToListAsync();
         return booksCirculation;
     }
+
+    //     public async Task<Circulation> CheckInBook(int barcodeId)
+    //     {
+
+    //     }
 }

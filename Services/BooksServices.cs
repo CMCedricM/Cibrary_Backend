@@ -19,7 +19,7 @@ public class BooksServices
         return count;
     }
 
-    public async Task<Book?> GetBookById(int id)
+    public async Task<Book?> GetBookById(string id)
     {
         var book = await _repository.GetBookById(id);
 
@@ -50,7 +50,7 @@ public class BooksServices
 
     }
 
-    public async Task<Book?> UpdateBook(int id, Book req)
+    public async Task<Book?> UpdateBook(string id, Book req)
     {
         var updatedBook = await _repository.UpdateBook(id, req);
 

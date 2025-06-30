@@ -18,25 +18,6 @@ namespace Cibrary_Backend.Controllers
             _context = context;
         }
 
-
-        private readonly Book[] books =
-        {
-            new Book
-            {
-                Title = "I am book",
-                Isbn = "217316328",
-                ID = 1,
-                TotalCnt = 0,
-            },
-             new Book
-            {
-                Title = "I am book",
-                Isbn = "217316328",
-                ID = 2,
-                TotalCnt = 80,
-            },
-        };
-
         [HttpGet("count")]
         [Authorize]
         public async Task<ActionResult<int>> GetCount()
@@ -45,14 +26,6 @@ namespace Cibrary_Backend.Controllers
             int cnt = await _context.GetBookCountAsync();
             return Ok(cnt);
         }
-
-        [HttpGet("test")]
-        [Authorize]
-        public ActionResult<Book[]> GetTestBooks()
-        {
-            return Ok(books);
-        }
-
 
         [HttpPost("createABook")]
         [Authorize]
@@ -94,7 +67,7 @@ namespace Cibrary_Backend.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book?>> GetBookById([FromRoute] int id)
+        public async Task<ActionResult<Book?>> GetBookById([FromRoute] string id)
         {
             var aBook = await _context.GetBookById(id);
 
@@ -105,7 +78,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<ActionResult<Book>> UpdateABook(int id, [FromBody] Book req)
+        public async Task<ActionResult<Book>> UpdateABook(string id, [FromBody] Book req)
         {
 
             try

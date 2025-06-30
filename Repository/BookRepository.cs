@@ -22,9 +22,9 @@ public class BooksRepository
         return count;
     }
 
-    public async Task<Book?> GetBookById(int id)
+    public async Task<Book?> GetBookById(string id)
     {
-        var aBook = await _context.Books.FirstOrDefaultAsync(b => id == b.ID);
+        var aBook = await _context.Books.AsNoTracking().FirstOrDefaultAsync(b => id == b.ID);
 
         return aBook;
     }
@@ -48,7 +48,7 @@ public class BooksRepository
         return book;
     }
 
-    public async Task<Book?> UpdateBook(int id, Book book)
+    public async Task<Book?> UpdateBook(string id, Book book)
     {
         var aBook = await GetBookById(id);
         if (aBook == null) return null;
