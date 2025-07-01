@@ -1,18 +1,18 @@
 using Cibrary_Backend.Contexts;
 using Cibrary_Backend.Errors;
 using Cibrary_Backend.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Cibrary_Backend.Repository;
 using Microsoft.EntityFrameworkCore;
 
 public class BooksRepository
 {
     private readonly BookDBContext _context;
+    private readonly BookCopyRepository _bookCopyRepository;
 
-
-    public BooksRepository(BookDBContext context)
+    public BooksRepository(BookDBContext context, BookCopyRepository bookCopyRepository)
     {
         _context = context;
+        _bookCopyRepository = bookCopyRepository;
     }
 
     public async Task<int> GetBookCount()
@@ -22,7 +22,7 @@ public class BooksRepository
         return count;
     }
 
-    public async Task<Book?> GetBookById(string id)
+    public async Task<Book?> GetBookById(int id)
     {
         var aBook = await _context.Books.FirstOrDefaultAsync(b => id == b.ID);
 
@@ -42,17 +42,16 @@ public class BooksRepository
         if (aBook != null) throw new ConflictFound($"{(book.Title != string.Empty ? book.Title : "book")} with {book.Isbn} exists ",
          book.Isbn, book.Title);
 
+        // Create the book first in the Book table
+        await _context.Books.AddAsync(book);
+        await _context.SaveChangesAsync();
 
+        await _bookCopyRepository.CreateABookCopy(book);
 
-        for (int i = 0; i < book.AvailabilityCnt; i++)
-        {
-            await _context.Books.AddAsync(book);
-            await _context.SaveChangesAsync();
-        }
         return book;
     }
 
-    public async Task<Book?> UpdateBook(string id, Book book)
+    public async Task<Book?> UpdateBook(int id, Book book)
     {
         var aBook = await GetBookById(id);
         if (aBook == null) return null;

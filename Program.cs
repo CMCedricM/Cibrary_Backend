@@ -61,6 +61,8 @@ builder.Services.AddScoped<BooksServices>();
 builder.Services.AddScoped<CirculationRepository>();
 builder.Services.AddScoped<CirculationServices>();
 
+builder.Services.AddScoped<BookCopyRepository>();
+
 
 builder.Services.AddHttpClient();
 
@@ -75,6 +77,9 @@ builder.Services.AddDbContext<BookDBContext>(options =>
 
 builder.Services.AddDbContext<CirculationDBContext>(options =>
     options.UseNpgsql(connectString, o => o.MapEnum<BookStatus>("book_status")));
+
+builder.Services.AddDbContext<BookCopyDBContext>(options =>
+    options.UseNpgsql(connectString));
 
 
 // Cors Rules

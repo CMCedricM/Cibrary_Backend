@@ -9,7 +9,7 @@ namespace Cibrary_Backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("id")]
-        public string ID { get; set; } = string.Empty;
+        public int ID { get; set; }
 
         [Column("uuid")]
         public Guid? Uuid { get; set; }

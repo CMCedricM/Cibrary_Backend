@@ -16,7 +16,7 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Books(
-  id text Primary key,
+  id integer Primary key,
   uuid UUID default gen_random_uuid(),
   isbn text NOT NULL,
   Title text,
@@ -32,7 +32,7 @@ CREATE TYPE book_status AS ENUM ('returned', 'checked_out', 'overdue', 'pending'
 CREATE TABLE Circulation(
   id serial Primary key, 
   User_Id integer, 
-  Book_Id text, 
+  Book_Id integer, 
   Checkout_Date timestamp,
   Due_Date timestamp,
   Return_Date timestamp null,
@@ -44,22 +44,14 @@ CREATE TABLE Circulation(
 );
 
 
-CREATE or REPLACE FUNCTION gen_book_id()
-RETURNS TRIGGER AS $$
-BEGIN 
-  if NEW.uuid IS NULL THEN 
-    NEW.uuid := gen_random_uuid();
-  END IF;
+CREATE TABLE BooksCopy(
+  id SERIAL PRIMARY KEY, 
+  uuid UUID default gen_random_uuid(), 
+  book_id integer NOT NULL,
+  CONSTRAINT fk_book FOREIGN KEY (Book_Id)
+  REFERENCES Books(id)
+);
 
-  NEW.id := encode(digest(COALESCE(NEW.isbn, '') || COALESCE(NEW.created_at::text, '') || COALESCE(NEW.uuid::text, ''), 'sha256'), 'base64');
-  RETURN NEW; 
-END; 
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER books_id_hash
-BEFORE INSERT ON Books
-FOR EACH ROW 
-EXECUTE FUNCTION gen_book_id(); 
 
 CREATE INDEX idx_user_emails ON Users(Email);
 CREATE INDEX idx_isbn_number ON Books(isbn);

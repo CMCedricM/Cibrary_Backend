@@ -67,7 +67,7 @@ namespace Cibrary_Backend.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book?>> GetBookById([FromRoute] string id)
+        public async Task<ActionResult<Book?>> GetBookById([FromRoute] int id)
         {
             var aBook = await _context.GetBookById(id);
 
@@ -78,7 +78,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<ActionResult<Book>> UpdateABook(string id, [FromBody] Book req)
+        public async Task<ActionResult<Book>> UpdateABook(int id, [FromBody] Book req)
         {
 
             try
