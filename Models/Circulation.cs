@@ -10,6 +10,7 @@ public enum BookStatus
     overdue,
     pending
 }
+[Table("circulation")]
 public class Circulation
 {
     [Key]

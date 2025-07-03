@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Cibrary_Backend.Models;
 
+[Table("bookscopy")]
 public class BookCopy
 {
     [Key]
