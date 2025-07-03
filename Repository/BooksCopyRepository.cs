@@ -1,3 +1,4 @@
+using System.Security.Principal;
 using Cibrary_Backend.Contexts;
 using Cibrary_Backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ public class BookCopyRepository
         {
             BookCopy newBookItem = new BookCopy
             {
-                Book_ID = book.ID
+                BookId = book.ID
             };
             booksToCreate.Add(newBookItem);
         }
@@ -29,6 +30,12 @@ public class BookCopyRepository
 
         return booksToCreate.First();
 
+    }
+
+    public async Task<BookCopy?> GetABookCopyById(int id)
+    {
+        var aCopy = await _context.BookCopy.FirstOrDefaultAsync(p => p.ID == id);
+        return aCopy;
     }
 
 }

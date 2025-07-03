@@ -14,6 +14,10 @@ public class BookCopy
     [Column("uuid")]
     public Guid? UUID { get; set; }
 
+    [Required]
     [Column("book_id")]
-    public int Book_ID { get; set; }
+    public int BookId { get; set; }
+
+    [ForeignKey("BookId")]
+    public Book Book { get; set; } = null!;
 }

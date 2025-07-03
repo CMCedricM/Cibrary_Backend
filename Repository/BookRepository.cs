@@ -22,13 +22,13 @@ public class BooksRepository
         return count;
     }
 
-    public async Task<Book?> GetBookById(int id)
+    public async Task<Book?> GetBookByInformationById(int id)
     {
         var aBook = await _context.Books.FirstOrDefaultAsync(b => id == b.ID);
 
         return aBook;
     }
-    public async Task<Book?> GetBookByISBN(string isbn)
+    public async Task<Book?> GetBookInformationByISBN(string isbn)
     {
         var getBook = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == isbn);
 
@@ -38,7 +38,7 @@ public class BooksRepository
 
     public async Task<Book> CreateBook(Book book)
     {
-        var aBook = await GetBookByISBN(book.Isbn);
+        var aBook = await GetBookInformationByISBN(book.Isbn);
         if (aBook != null) throw new ConflictFound($"{(book.Title != string.Empty ? book.Title : "book")} with {book.Isbn} exists ",
          book.Isbn, book.Title);
 
@@ -53,7 +53,7 @@ public class BooksRepository
 
     public async Task<Book?> UpdateBook(int id, Book book)
     {
-        var aBook = await GetBookById(id);
+        var aBook = await GetBookByInformationById(id);
         if (aBook == null) return null;
 
         var properties = typeof(Book).GetProperties();

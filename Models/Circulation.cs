@@ -25,11 +25,11 @@ public class Circulation
     public User User { get; set; } = null!;
 
     [Required]
-    [Column("book_id")]
-    public int BookId { get; set; }
+    [Column("bookcopy_id")]
+    public int BookCopyId { get; set; }
 
-    [ForeignKey("BookId")]
-    public Book Book { get; set; } = null!;
+    [ForeignKey("BookCopyId")]
+    public BookCopy Book { get; set; } = null!;
 
     [Column("checkout_date")]
     public DateTime? CheckoutDate { get; set; }

@@ -56,20 +56,19 @@ namespace Cibrary_Backend.Controllers
 
 
         [HttpGet("/isbn/{isbn}")]
-        public async Task<ActionResult<Book?>> GetBookByISBN(string isbn)
+        public async Task<ActionResult<Book?>> GetBookInformationByISBN(string isbn)
         {
-            var aBook = await _context.GetBookByISBN(isbn);
+            var aBook = await _context.GetBookInformationByISBNAsync(isbn);
 
             if (aBook == null) return NotFound();
 
             return Ok(aBook);
         }
 
-
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book?>> GetBookById([FromRoute] int id)
+        public async Task<ActionResult<Book?>> GetBookInformationById([FromRoute] int id)
         {
-            var aBook = await _context.GetBookById(id);
+            var aBook = await _context.GetBookInformationByIdAsync(id);
 
             if (aBook == null) return NotFound();
 

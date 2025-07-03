@@ -27,22 +27,6 @@ CREATE TABLE Books(
   description text
 );
 
-CREATE TYPE book_status AS ENUM ('returned', 'checked_out', 'overdue', 'pending');
-
-CREATE TABLE Circulation(
-  id serial Primary key, 
-  User_Id integer, 
-  Book_Id integer, 
-  Checkout_Date timestamp,
-  Due_Date timestamp,
-  Return_Date timestamp null,
-  Status book_status default 'pending',
-  CONSTRAINT fk_users FOREIGN KEY (User_Id)
-  REFERENCES Users(id),
-  CONSTRAINT fk_book FOREIGN KEY (Book_Id) 
-  REFERENCES Books(id) 
-);
-
 
 CREATE TABLE BooksCopy(
   id SERIAL PRIMARY KEY, 
@@ -51,6 +35,25 @@ CREATE TABLE BooksCopy(
   CONSTRAINT fk_book FOREIGN KEY (Book_Id)
   REFERENCES Books(id)
 );
+
+
+CREATE TYPE book_status AS ENUM ('returned', 'checked_out', 'overdue', 'pending');
+
+CREATE TABLE Circulation(
+  id serial Primary key, 
+  User_Id integer, 
+  BookCopy_Id integer, 
+  Checkout_Date timestamp,
+  Due_Date timestamp,
+  Return_Date timestamp null,
+  Status book_status default 'pending',
+  CONSTRAINT fk_users FOREIGN KEY (User_Id)
+  REFERENCES Users(id),
+  CONSTRAINT fk_book_copy FOREIGN KEY (BookCopy_Id) 
+  REFERENCES BooksCopy(id) 
+);
+
+
 
 
 CREATE INDEX idx_user_emails ON Users(Email);

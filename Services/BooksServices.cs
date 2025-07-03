@@ -19,23 +19,23 @@ public class BooksServices
         return count;
     }
 
-    public async Task<Book?> GetBookById(int id)
+    public async Task<Book?> GetBookInformationByIdAsync(int id)
     {
-        var book = await _repository.GetBookById(id);
+        var book = await _repository.GetBookByInformationById(id);
 
         return book;
     }
 
-    public async Task<Book?> GetBookByISBN(string isbn)
+    public async Task<Book?> GetBookInformationByISBNAsync(string isbn)
     {
-        var book = await _repository.GetBookByISBN(isbn);
+        var book = await _repository.GetBookInformationByISBN(isbn);
 
         return book;
     }
 
     public async Task<Book?> GetBookAsnyc(string isbn)
     {
-        Book? aBook = await _repository.GetBookByISBN(isbn);
+        Book? aBook = await _repository.GetBookInformationByISBN(isbn);
 
         return aBook;
 
