@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cibrary_Backend.Models
 {
+    [Table("books")]
     public class Book
     {
 

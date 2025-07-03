@@ -34,7 +34,7 @@ public class BookCopyRepository
 
     public async Task<BookCopy?> GetABookCopyById(int id)
     {
-        var aCopy = await _context.BookCopy.FirstOrDefaultAsync(p => p.ID == id);
+        var aCopy = await _context.BookCopy.Include(p => p.Book).FirstOrDefaultAsync(p => p.ID == id);
         return aCopy;
     }
 
