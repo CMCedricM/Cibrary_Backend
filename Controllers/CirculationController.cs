@@ -39,7 +39,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPost("checkoutBook")]
         [Authorize]
-        public async Task<ActionResult<Circulation>> Checkout(string userId, int bookId)
+        public async Task<ActionResult<Circulation>> Checkout([FromBody] CheckoutInRequest body)
         {
             // First we need to check the permissions of the account running checkout
             var auth0User = User.FindFirst(authId)?.Value;
@@ -51,7 +51,7 @@ namespace Cibrary_Backend.Controllers
             // Now we can check out the user
             try
             {
-                Circulation book = await _circulationService.CheckoutBook(bookId, userId);
+                Circulation book = await _circulationService.CheckoutBook(body.BookId, body.UserId);
                 return Ok(book);
             }
             catch (Exception e)
