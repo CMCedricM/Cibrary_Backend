@@ -43,9 +43,9 @@ CREATE TABLE Circulation(
   id serial Primary key, 
   User_Id integer, 
   BookCopy_Id integer, 
-  Checkout_Date timestamp,
-  Due_Date timestamp,
-  Return_Date timestamp null,
+  Checkout_Date timestamp with time zone ,
+  Due_Date timestamp with time zone,
+  Return_Date timestamp with time zone null,
   Status book_status default 'pending',
   CONSTRAINT fk_users FOREIGN KEY (User_Id)
   REFERENCES Users(id),
