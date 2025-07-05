@@ -35,7 +35,7 @@ public class CirculationRepository
     public async Task<Circulation> CheckoutABookAsync(int bookId, string user_id)
     {
         // Verify the book exists in our database
-        var book = await _booksCopyContext.BookCopy.Include(b => b.Book).FirstOrDefaultAsync(p => p.BookId == bookId);
+        var book = await _booksCopyContext.BookCopy.Include(b => b.Book).FirstOrDefaultAsync(p => p.ID == bookId);
         if (book == null) throw new DataNotFound("Could not locate records for the requested book id.", "", "");
 
         // Verify the user we are checking it out to exists
