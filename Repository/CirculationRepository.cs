@@ -26,7 +26,7 @@ public class CirculationRepository
     // For Checking in a book, we need to return the information for the ui to display
     public async Task<Circulation?> RetrieveInfo(int bookId)
     {
-        var bookCirculation = await _context.Circulation.Include(b => b.User).Include(b => b.Book).FirstOrDefaultAsync(p => p.BookCopyId == bookId);
+        var bookCirculation = await _context.Circulation.Include(b => b.User).Include(b => b.Book).FirstOrDefaultAsync(p => p.Id == bookId);
         if (bookCirculation == null) { throw new DataNotFound("Could not locate records for the requested book id.", "", ""); }
         return bookCirculation;
     }

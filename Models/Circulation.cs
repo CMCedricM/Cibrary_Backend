@@ -33,10 +33,13 @@ public class Circulation
     public BookCopy Book { get; set; } = null!;
 
     [Column("checkout_date")]
-    public DateTime? CheckoutDate { get; set; }
+    public DateTime CheckoutDate { get; set; }
+
+    [Column("due_date")]
+    public DateTime DueDate { get; set; }
 
     [Column("return_date")]
-    public DateTime? ReturnDate { get; set; }
+    public DateTime ReturnDate { get; set; }
 
     [Column("book_status", TypeName = "book_status")]
     public BookStatus BookStatus { get; set; } = BookStatus.pending;

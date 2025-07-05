@@ -25,6 +25,12 @@ namespace Cibrary_Backend.Contexts
             modelBuilder.HasPostgresEnum<BookStatus>();
             modelBuilder.Entity<Circulation>().ToTable("circulation");
             modelBuilder.Entity<Circulation>().Property(r => r.BookStatus);
+
+            // Mapping of dates
+            modelBuilder.Entity<Circulation>().Property(r => r.CheckoutDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            modelBuilder.Entity<Circulation>().Property(r => r.ReturnDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            modelBuilder.Entity<Circulation>().Property(r => r.DueDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
         }
     }
 }
