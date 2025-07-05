@@ -12,7 +12,7 @@ CREATE TABLE Users (
   phone_number text,
   FirstName text, 
   LastName text,
-  LastLogin timestamp
+  LastLogin timestamptz
 );
 
 CREATE TABLE Books(
@@ -20,8 +20,8 @@ CREATE TABLE Books(
   uuid UUID default gen_random_uuid(),
   isbn text NOT NULL,
   Title text,
-  ReleaseDate timestamp null,
-  created_at timestamp default CURRENT_TIMESTAMP,
+  ReleaseDate timestamptz null,
+  created_at timestamptz default CURRENT_TIMESTAMP,
   AvailabilityCnt integer,
   TotalCnt integer,
   description text
@@ -43,9 +43,9 @@ CREATE TABLE Circulation(
   id serial Primary key, 
   User_Id integer, 
   BookCopy_Id integer, 
-  Checkout_Date timestamp with time zone ,
-  Due_Date timestamp with time zone,
-  Return_Date timestamp with time zone null,
+  Checkout_Date timestamptz ,
+  Due_Date timestamptz,
+  Return_Date timestamptz null,
   Status book_status default 'pending',
   CONSTRAINT fk_users FOREIGN KEY (User_Id)
   REFERENCES Users(id),

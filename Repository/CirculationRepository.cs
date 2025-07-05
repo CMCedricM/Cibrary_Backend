@@ -19,7 +19,7 @@ public class CirculationRepository
 
     public async Task<List<Circulation>?> GetBooks()
     {
-        var booksCirculation = await _context.Circulation.Where(p => p.BookStatus == BookStatus.pending).ToListAsync();
+        var booksCirculation = await _context.Circulation.Where(p => p.Status == BookStatus.pending).ToListAsync();
         return booksCirculation;
     }
 
@@ -44,17 +44,20 @@ public class CirculationRepository
 
         // Run the checkout flow
         // 1. Create a record in the Circulation 
-        Circulation newCirculation = new()
+        Circulation newCirculation = new Circulation
         {
-            User = user,
             UserId = user.id,
-            Book = book,
             BookCopyId = book.ID,
-            CheckoutDate = DateTime.Today,
-            ReturnDate = DateTime.Today.AddDays(14),
-            BookStatus = BookStatus.checked_out
+            CheckoutDate = DateTime.UtcNow,
+            DueDate = DateTime.UtcNow.Date.AddDays(14),
+            ReturnDate = DateTime.UtcNow,
+            Status = BookStatus.checked_out
         };
 
+        Console.WriteLine("Here I am");
+        Console.WriteLine(newCirculation.CheckoutDate.Kind);
+        Console.WriteLine(newCirculation.DueDate.Kind);
+        Console.WriteLine(newCirculation.ReturnDate.Kind);
         await _context.Circulation.AddAsync(newCirculation);
         // 2. Save the changes
         await _context.SaveChangesAsync();

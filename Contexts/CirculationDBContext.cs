@@ -24,12 +24,19 @@ namespace Cibrary_Backend.Contexts
         {
             modelBuilder.HasPostgresEnum<BookStatus>();
             modelBuilder.Entity<Circulation>().ToTable("circulation");
-            modelBuilder.Entity<Circulation>().Property(r => r.BookStatus);
+            modelBuilder.Entity<Circulation>().Property(r => r.Status);
+
+            modelBuilder.Entity<Circulation>(entity =>
+            {
+                entity.Property(e => e.CheckoutDate).HasColumnType("timestamptz");
+                entity.Property(e => e.DueDate).HasColumnType("timestamptz");
+                entity.Property(e => e.ReturnDate).HasColumnType("timestamptz");
+            });
 
             // Mapping of dates
-            modelBuilder.Entity<Circulation>().Property(r => r.CheckoutDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-            modelBuilder.Entity<Circulation>().Property(r => r.ReturnDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-            modelBuilder.Entity<Circulation>().Property(r => r.DueDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            // modelBuilder.Entity<Circulation>().Property(r => r.CheckoutDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            // modelBuilder.Entity<Circulation>().Property(r => r.ReturnDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            // modelBuilder.Entity<Circulation>().Property(r => r.DueDate).HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
         }
     }

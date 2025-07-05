@@ -41,8 +41,8 @@ public class Circulation
     [Column("return_date")]
     public DateTime ReturnDate { get; set; }
 
-    [Column("book_status", TypeName = "book_status")]
-    public BookStatus BookStatus { get; set; } = BookStatus.pending;
+    [Column("status", TypeName = "book_status")]
+    public BookStatus Status { get; set; } = BookStatus.pending;
 
 
 }
