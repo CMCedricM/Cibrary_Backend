@@ -65,7 +65,6 @@ public class CirculationRepository
 
     public async Task<Circulation?> CompleteCheckout(int id)
     {
-        Console.WriteLine("Recieved here ", id);
         var checkOutData = await _context.Circulation.FirstOrDefaultAsync(p => p.Id == id);
         if (checkOutData == null) return null;
 

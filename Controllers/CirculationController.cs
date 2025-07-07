@@ -67,7 +67,6 @@ namespace Cibrary_Backend.Controllers
             // Now we can check out the user
             try
             {
-                Console.WriteLine($"Recieved {body.BookId} {body.UserId}");
                 Circulation book = await _circulationService.CheckoutBook(body.BookId, body.UserId);
                 return Ok(book);
             }
