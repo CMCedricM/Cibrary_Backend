@@ -58,7 +58,6 @@ namespace Cibrary_Backend.Controllers
             return Ok(userInfo);
         }
 
-
         [HttpPost("createUser")]
         [Authorize]
         public async Task<ActionResult<User>> CreateProfile(User profile)
