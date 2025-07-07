@@ -103,7 +103,7 @@ namespace Cibrary_Backend.Controllers
 
             // Also check role is ok
             var userRole = await _userService.GetUserAsync(auth0User);
-            if (userRole == null || userRole.role != UserRole.founder) return Unauthorized();
+            if (userRole == null || userRole.Role != UserRole.founder) return Unauthorized();
 
             if (ModelState.IsValid)
             {
@@ -125,7 +125,7 @@ namespace Cibrary_Backend.Controllers
             if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
 
             var checkRole = await _userService.GetUserAsync(auth0User);
-            if (checkRole == null || checkRole.role != UserRole.admin) return Unauthorized();
+            if (checkRole == null || checkRole.Role != UserRole.admin) return Unauthorized();
 
             // Now actually fetch the data
             var usersData = await _userService.GetUsersAsync(query);

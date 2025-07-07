@@ -25,7 +25,7 @@ namespace Cibrary_Backend.Controllers
             var auth0User = User.FindFirst(authId)?.Value;
             if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
             var permission = await _userService.GetUserAsync(auth0User);
-            if (permission == null || permission.role != UserRole.admin) return Unauthorized();
+            if (permission == null || permission.Role != UserRole.admin) return Unauthorized();
 
             var bookData = await _circulationService.GetBookCopyByIdAsync(id);
             if (bookData != null)
@@ -46,11 +46,12 @@ namespace Cibrary_Backend.Controllers
             if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
             // Now we need to check their permissions
             var permission = await _userService.GetUserAsync(auth0User);
-            if (permission == null || permission.role != UserRole.admin) return Unauthorized();
+            if (permission == null || permission.Role != UserRole.admin) return Unauthorized();
 
             // Now we can check out the user
             try
             {
+                Console.WriteLine($"Recieved {body.BookId} {body.UserId}");
                 Circulation book = await _circulationService.CheckoutBook(body.BookId, body.UserId);
                 return Ok(book);
             }

@@ -48,19 +48,20 @@ public class CirculationRepository
         {
             UserId = user.id,
             BookCopyId = book.ID,
+
+
             CheckoutDate = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.Date.AddDays(14),
             ReturnDate = DateTime.UtcNow,
             Status = BookStatus.checked_out
         };
 
-        Console.WriteLine("Here I am");
-        Console.WriteLine(newCirculation.CheckoutDate.Kind);
-        Console.WriteLine(newCirculation.DueDate.Kind);
-        Console.WriteLine(newCirculation.ReturnDate.Kind);
         await _context.Circulation.AddAsync(newCirculation);
         // 2. Save the changes
         await _context.SaveChangesAsync();
+
+        // query again
+        await _context.Circulation.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == newCirculation.Id);
 
         return newCirculation;
     }

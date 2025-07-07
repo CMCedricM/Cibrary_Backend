@@ -27,7 +27,7 @@ public class UserRepository
     {
         if (!string.IsNullOrWhiteSpace(query.Role.ToString()))
         {
-            var userData = await _context.Users.Where(p => p.role == query.Role).ToListAsync();
+            var userData = await _context.Users.Where(p => p.Role == query.Role).ToListAsync();
             return userData;
         }
 
@@ -37,7 +37,7 @@ public class UserRepository
     {
         var checkUser = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);
         if (checkUser != null) return checkUser;
-        
+
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
