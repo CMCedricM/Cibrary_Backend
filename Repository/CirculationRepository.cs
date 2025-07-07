@@ -60,9 +60,6 @@ public class CirculationRepository
         // 2. Save the changes
         await _context.SaveChangesAsync();
 
-        // query again
-        await _context.Circulation.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == newCirculation.Id);
-
         return newCirculation;
     }
 
