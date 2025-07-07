@@ -16,7 +16,7 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Books(
-  id integer Primary key,
+  id SERIAL Primary key,
   uuid UUID default gen_random_uuid(),
   isbn text NOT NULL,
   Title text,
