@@ -53,7 +53,7 @@ public class CirculationRepository
             CheckoutDate = DateTime.UtcNow,
             DueDate = DateTime.UtcNow.Date.AddDays(14),
             ReturnDate = DateTime.UtcNow,
-            Status = BookStatus.checked_out
+            Status = BookStatus.pending
         };
 
         await _context.Circulation.AddAsync(newCirculation);
@@ -61,6 +61,19 @@ public class CirculationRepository
         await _context.SaveChangesAsync();
 
         return newCirculation;
+    }
+
+    public async Task<Circulation?> CompleteCheckout(int id)
+    {
+        Console.WriteLine("Recieved here ", id);
+        var checkOutData = await _context.Circulation.FirstOrDefaultAsync(p => p.Id == id);
+        if (checkOutData == null) return null;
+
+        checkOutData.Status = BookStatus.checked_out;
+
+        await _context.SaveChangesAsync();
+
+        return checkOutData;
     }
 
 }

@@ -29,6 +29,11 @@ public class CirculationServices
 
     }
 
+    public async Task<Circulation?> CompleteCheckout(int id)
+    {
+        var res = await _repository.CompleteCheckout(id);
+        return res; 
+}
     public async Task<BookCopy?> GetBookCopyByIdAsync(int id)
     {
         var res = await _bookCopyRepo.GetABookCopyById(id);

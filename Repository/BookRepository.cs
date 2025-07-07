@@ -42,9 +42,9 @@ public class BooksRepository
         if (aBook != null) throw new ConflictFound($"{(book.Title != string.Empty ? book.Title : "book")} with {book.Isbn} exists ",
          book.Isbn, book.Title);
 
-        Console.WriteLine("Her i am");
-        Console.WriteLine(book.ID);
-
+        // Since we are creating the book here we can jsut assume the available count
+        // is the total count
+        book.AvailabilityCnt = book.TotalCnt;
 
         // Create the book first in the Book table
         await _context.Books.AddAsync(book);

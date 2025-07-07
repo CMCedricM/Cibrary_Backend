@@ -36,6 +36,22 @@ namespace Cibrary_Backend.Controllers
             return NotFound("Could Not Locate Book");
 
         }
+        [HttpGet("completeCheckout/{id}")]
+        [Authorize]
+        public async Task<ActionResult<Circulation?>> CompleteCheckout([FromRoute] int id)
+        {
+            var auth0User = User.FindFirst(authId)?.Value;
+            if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
+            // verify they have admin permissions
+            var permissions = await _userService.GetUserAsync(auth0User);
+            if (permissions == null || permissions.Role != UserRole.admin) return Unauthorized();
+
+            var res = await _circulationService.CompleteCheckout(id);
+
+            if (res == null) return NotFound();
+
+            return Ok(res);
+        }
 
         [HttpPost("checkoutBook")]
         [Authorize]
@@ -61,6 +77,7 @@ namespace Cibrary_Backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
 
 
     }
