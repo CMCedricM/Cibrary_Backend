@@ -42,6 +42,9 @@ public class CirculationRepository
         var user = await _userDbContext.Users.FirstOrDefaultAsync(p => p.auth0id == user_id);
         if (user == null) throw new NotAllowed($"Could not locate user with provided id {user_id}", user_id);
 
+        // Verify that there is no pending or checked out status of the book
+        var findCirculation = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookId && (p.Status == BookStatus.pending || p.Status == BookStatus.checked_out));
+        if (findCirculation != null) throw new ConflictFound("This book already has a checkout request", book.Book.Isbn, book.Book.Title);
         // Run the checkout flow
         // 1. Create a record in the Circulation 
         Circulation newCirculation = new Circulation

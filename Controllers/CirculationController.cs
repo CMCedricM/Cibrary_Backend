@@ -1,3 +1,4 @@
+using Cibrary_Backend.Errors;
 using Cibrary_Backend.Models;
 using Cibrary_Backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -70,10 +71,10 @@ namespace Cibrary_Backend.Controllers
                 Circulation book = await _circulationService.CheckoutBook(body.BookId, body.UserId);
                 return Ok(book);
             }
-            catch (Exception e)
+            catch (ConflictFound e)
             {
                 Console.WriteLine(e);
-                return BadRequest(e.Message);
+                return StatusCode(e.StatusCode, new { error = e.Message });
             }
         }
 
