@@ -30,7 +30,7 @@ public class Circulation
     public int BookCopyId { get; set; }
 
     [ForeignKey("BookCopyId")]
-    public BookCopy Book { get; set; } = null!;
+    public BookCopy BookCopy { get; set; } = null!;
 
     [Column("checkout_date")]
     public DateTime CheckoutDate { get; set; }

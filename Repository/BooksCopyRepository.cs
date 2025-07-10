@@ -20,7 +20,8 @@ public class BookCopyRepository
         {
             BookCopy newBookItem = new BookCopy
             {
-                BookId = book.ID
+                BookId = book.ID,
+                Status = BookStatus.returned
             };
             booksToCreate.Add(newBookItem);
         }

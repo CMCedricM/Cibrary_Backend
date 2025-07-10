@@ -1,3 +1,4 @@
+using Cibrary_Backend.dtos;
 using Cibrary_Backend.Models;
 using Cibrary_Backend.Repository;
 
@@ -21,9 +22,9 @@ public class CirculationServices
         return pendingBooks;
     }
 
-    public async Task<Circulation> CheckoutBook(int bookId, string userId)
+    public async Task<CheckoutResponse> CheckoutBook(int bookId, string userId)
     {
-        Circulation res = await _repository.CheckoutABookAsync(bookId, userId);
+        CheckoutResponse res = await _repository.CheckoutABookAsync(bookId, userId);
 
         return res;
 
@@ -32,11 +33,19 @@ public class CirculationServices
     public async Task<Circulation?> CompleteCheckout(int id)
     {
         var res = await _repository.CompleteCheckout(id);
-        return res; 
-}
+        return res;
+    }
+
+    public async Task<Boolean> CancelCheckout(int id)
+    {
+        var data = await _repository.CancelCheckout(id);
+
+        return data;
+    }
     public async Task<BookCopy?> GetBookCopyByIdAsync(int id)
     {
         var res = await _bookCopyRepo.GetABookCopyById(id);
         return res;
     }
+
 }

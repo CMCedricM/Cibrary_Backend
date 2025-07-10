@@ -79,7 +79,7 @@ builder.Services.AddDbContext<CirculationDBContext>(options =>
     options.UseNpgsql(connectString, o => o.MapEnum<BookStatus>("book_status")));
 
 builder.Services.AddDbContext<BookCopyDBContext>(options =>
-    options.UseNpgsql(connectString));
+    options.UseNpgsql(connectString, o => o.MapEnum<BookStatus>("book_status")));
 
 
 // Cors Rules

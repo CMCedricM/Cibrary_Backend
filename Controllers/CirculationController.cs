@@ -1,3 +1,5 @@
+using Auth0.ManagementApi.Models.Actions;
+using Cibrary_Backend.dtos;
 using Cibrary_Backend.Errors;
 using Cibrary_Backend.Models;
 using Cibrary_Backend.Services;
@@ -13,7 +15,7 @@ namespace Cibrary_Backend.Controllers
         private readonly UsersServices _userService;
         private readonly CirculationServices _circulationService;
 
-        private readonly string authId = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+        private readonly string AUTH_ID_KEY = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
         public CirculationController(UsersServices userContext, CirculationServices circulationService)
         {
             _userService = userContext; _circulationService = circulationService;
@@ -23,7 +25,7 @@ namespace Cibrary_Backend.Controllers
         [Authorize]
         public async Task<ActionResult<BookCopy>> GetBookCopyById([FromRoute] int id)
         {
-            var auth0User = User.FindFirst(authId)?.Value;
+            var auth0User = User.FindFirst(AUTH_ID_KEY)?.Value;
             if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
             var permission = await _userService.GetUserAsync(auth0User);
             if (permission == null || permission.Role != UserRole.admin) return Unauthorized();
@@ -37,11 +39,32 @@ namespace Cibrary_Backend.Controllers
             return NotFound("Could Not Locate Book");
 
         }
-        [HttpGet("completeCheckout/{id}")]
+        [HttpDelete("cancelCheckout/{id}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveCheckout([FromRoute] int id)
+        {
+            var auth0User = User.FindFirst(AUTH_ID_KEY)?.Value;
+            if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
+            var permissions = await _userService.GetUserAsync(auth0User);
+            if (permissions == null || permissions.Role != UserRole.admin) return Unauthorized();
+
+            try
+            {
+                var removeBook = await _circulationService.CancelCheckout(id);
+                return Ok();
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+
+        }
+        [HttpPost("completeCheckout/{id}")]
         [Authorize]
         public async Task<ActionResult<Circulation?>> CompleteCheckout([FromRoute] int id)
         {
-            var auth0User = User.FindFirst(authId)?.Value;
+            var auth0User = User.FindFirst(AUTH_ID_KEY)?.Value;
             if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
             // verify they have admin permissions
             var permissions = await _userService.GetUserAsync(auth0User);
@@ -56,10 +79,10 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPost("checkoutBook")]
         [Authorize]
-        public async Task<ActionResult<Circulation>> Checkout([FromBody] CheckoutInRequest body)
+        public async Task<ActionResult<CheckoutResponse>> Checkout([FromBody] CheckoutInRequest body)
         {
             // First we need to check the permissions of the account running checkout
-            var auth0User = User.FindFirst(authId)?.Value;
+            var auth0User = User.FindFirst(AUTH_ID_KEY)?.Value;
             if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
             // Now we need to check their permissions
             var permission = await _userService.GetUserAsync(auth0User);
@@ -68,7 +91,7 @@ namespace Cibrary_Backend.Controllers
             // Now we can check out the user
             try
             {
-                Circulation book = await _circulationService.CheckoutBook(body.BookId, body.UserId);
+                CheckoutResponse book = await _circulationService.CheckoutBook(body.BookId, body.UserId);
                 return Ok(book);
             }
             catch (ConflictFound e)

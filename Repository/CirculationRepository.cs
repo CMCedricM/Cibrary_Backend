@@ -1,4 +1,5 @@
 using Cibrary_Backend.Contexts;
+using Cibrary_Backend.dtos;
 using Cibrary_Backend.Errors;
 using Cibrary_Backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -26,13 +27,13 @@ public class CirculationRepository
     // For Checking in a book, we need to return the information for the ui to display
     public async Task<Circulation?> RetrieveInfo(int bookId)
     {
-        var bookCirculation = await _context.Circulation.Include(b => b.User).Include(b => b.Book).FirstOrDefaultAsync(p => p.Id == bookId);
+        var bookCirculation = await _context.Circulation.Include(b => b.User).Include(b => b.BookCopy).FirstOrDefaultAsync(p => p.Id == bookId);
         if (bookCirculation == null) { throw new DataNotFound("Could not locate records for the requested book id.", "", ""); }
         return bookCirculation;
     }
 
     // To check out a book
-    public async Task<Circulation> CheckoutABookAsync(int bookId, string user_id)
+    public async Task<CheckoutResponse> CheckoutABookAsync(int bookId, string user_id)
     {
         // Verify the book exists in our database
         var book = await _booksCopyContext.BookCopy.Include(b => b.Book).FirstOrDefaultAsync(p => p.ID == bookId);
@@ -43,7 +44,7 @@ public class CirculationRepository
         if (user == null) throw new NotAllowed($"Could not locate user with provided id {user_id}", user_id);
 
         // Verify that there is no pending or checked out status of the book
-        var findCirculation = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookId && (p.Status == BookStatus.pending || p.Status == BookStatus.checked_out));
+        var findCirculation = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookId && (p.BookCopy.Status != BookStatus.returned || p.Status == BookStatus.pending || p.Status == BookStatus.checked_out));
         if (findCirculation != null) throw new ConflictFound("This book already has a checkout request", book.Book.Isbn, book.Book.Title);
         // Run the checkout flow
         // 1. Create a record in the Circulation 
@@ -63,7 +64,15 @@ public class CirculationRepository
         // 2. Save the changes
         await _context.SaveChangesAsync();
 
-        return newCirculation;
+        CheckoutResponse res = new()
+        {
+            Id = newCirculation.Id,
+            UserAuth0Id = user.auth0id,
+            UserEmail = user.email,
+            BookCopy = book
+        };
+
+        return res;
     }
 
     public async Task<Circulation?> CompleteCheckout(int id)
@@ -76,6 +85,14 @@ public class CirculationRepository
         await _context.SaveChangesAsync();
 
         return checkOutData;
+    }
+
+    public async Task<Boolean> CancelCheckout(int id)
+    {
+        await _context.Circulation.Where(p => p.Id == id).ExecuteDeleteAsync();
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
 }
