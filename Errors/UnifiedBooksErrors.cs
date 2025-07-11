@@ -39,10 +39,10 @@ public class NotAllowed(string message, string userId) : GeneralException(messag
 
 
 }
-public class DataNotFound(string message, string isbn, string title) : GeneralException(message)
+public class DataNotFound(string message, string objectName, string ObjectIdentifier) : GeneralException(message)
 {
-    public string Title { get; } = title;
-    public string Isbn { get; } = isbn;
+    public string ObjectName { get; } = objectName;
+    public string ObjectIdentifier { get; } = ObjectIdentifier;
 
     public override int StatusCode => 404;
 
@@ -50,8 +50,8 @@ public class DataNotFound(string message, string isbn, string title) : GeneralEx
     {
         StatusCode,
         Message,
-        Isbn,
-        Title
+        ObjectIdentifier,
+        ObjectName
     };
 
 }

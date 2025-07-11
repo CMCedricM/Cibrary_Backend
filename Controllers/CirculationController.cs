@@ -5,6 +5,7 @@ using Cibrary_Backend.Models;
 using Cibrary_Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Expressions;
 
 namespace Cibrary_Backend.Controllers
 {
@@ -97,6 +98,25 @@ namespace Cibrary_Backend.Controllers
             catch (ConflictFound e)
             {
                 Console.WriteLine(e);
+                return StatusCode(e.StatusCode, new { error = e.Message });
+            }
+        }
+
+        [HttpPost("checkoutInBook")]
+        [Authorize]
+        public async Task<ActionResult<CheckInResponse>> Checkin([FromBody] CheckoutInRequest body)
+        {
+            var auth0User = User.FindFirst(AUTH_ID_KEY)?.Value;
+            if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
+            var permission = await _userService.GetUserAsync(auth0User);
+            if (permission == null || permission.Role != UserRole.admin) return Unauthorized();
+            try
+            {
+                CheckInResponse res = await _circulationService.CheckinBook(body.BookId, body.UserId);
+                return res;
+            }
+            catch (DataNotFound e)
+            {
                 return StatusCode(e.StatusCode, new { error = e.Message });
             }
         }

@@ -48,4 +48,10 @@ public class CirculationServices
         return res;
     }
 
+    public async Task<CheckInResponse> CheckinBook(int bookId, string patronAuth0Id)
+    {
+        var res = await _repository.CheckinBook(bookId, patronAuth0Id);
+        return res;
+    }
+
 }

@@ -2,6 +2,7 @@ using Cibrary_Backend.Contexts;
 using Cibrary_Backend.dtos;
 using Cibrary_Backend.Errors;
 using Cibrary_Backend.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 public class CirculationRepository
@@ -48,7 +49,7 @@ public class CirculationRepository
         if (findCirculation != null) throw new ConflictFound("This book already has a checkout request", book.Book.Isbn, book.Book.Title);
         // Run the checkout flow
         // 1. Create a record in the Circulation 
-        Circulation newCirculation = new Circulation
+        Circulation newCirculation = new()
         {
             UserId = user.id,
             BookCopyId = book.ID,
@@ -86,7 +87,6 @@ public class CirculationRepository
         var bookCopyUpdate = await _booksCopyContext.BookCopy.FirstOrDefaultAsync(p => p.ID == checkOutData.BookCopyId);
         if (bookCopyUpdate != null)
         {
-            Console.WriteLine("Found book");
             bookCopyUpdate.Status = BookStatus.checked_out;
             await _booksCopyContext.SaveChangesAsync();
         }
@@ -102,6 +102,30 @@ public class CirculationRepository
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    public async Task<CheckInResponse> CheckinBook(int bookId, string patronAuth0Id)
+    {
+        // Lets check if the bookcopy exists
+        var bookCopy = await _booksCopyContext.BookCopy.FirstOrDefaultAsync(p => p.ID == bookId) ?? throw new DataNotFound("Could not locate requested book copy", "", "");
+        var patron = await _userDbContext.Users.FirstOrDefaultAsync(p => p.auth0id == patronAuth0Id) ?? throw new DataNotFound($"Could not locate patron with auth0id", "", patronAuth0Id);
+        var circulationItem = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookCopy.BookId && p.Status == BookStatus.checked_out && p.UserId == patron.id) ?? throw new DataNotFound("Could not locate checkout record", "", $"{bookId}");
+        circulationItem.ReturnDate = DateTime.UtcNow;
+        circulationItem.Status = BookStatus.returned;
+        await _context.SaveChangesAsync();
+
+        // Return the reciept
+        CheckInResponse res = new()
+        {
+            CriculationRecordId = circulationItem.Id,
+            UserAuth0Id = patron.auth0id,
+            UserEmail = patron.email,
+            BookCopy = bookCopy,
+            ReturnedDate = circulationItem.ReturnDate,
+            CurrentDate = DateTime.UtcNow,
+        };
+
+        return res;
     }
 
 }
