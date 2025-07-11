@@ -69,7 +69,8 @@ public class CirculationRepository
             Id = newCirculation.Id,
             UserAuth0Id = user.auth0id,
             UserEmail = user.email,
-            BookCopy = book
+            BookCopy = book,
+            DueDate = newCirculation.DueDate
         };
 
         return res;

@@ -8,4 +8,5 @@ public class CheckoutResponse
     public string UserAuth0Id { get; set; } = string.Empty;
     public string UserEmail { get; set; } = string.Empty;
     public BookCopy? BookCopy { get; set; }
+    public DateTime DueDate { get; set; }
 }
