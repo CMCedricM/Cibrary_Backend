@@ -22,7 +22,7 @@ public class BookCopyDBContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresEnum<BookStatus>();
-        modelBuilder.Entity<BookCopy>().Property(r => r.Status);
         modelBuilder.Entity<BookCopy>().ToTable("bookscopy");
+        modelBuilder.Entity<BookCopy>().Property(r => r.Status);
     }
 }

@@ -82,6 +82,14 @@ public class CirculationRepository
 
         checkOutData.Status = BookStatus.checked_out;
 
+        var bookCopyUpdate = await _booksCopyContext.BookCopy.FirstOrDefaultAsync(p => p.ID == checkOutData.BookCopyId);
+        if (bookCopyUpdate != null)
+        {
+            Console.WriteLine("Found book");
+            bookCopyUpdate.Status = BookStatus.checked_out;
+            await _booksCopyContext.SaveChangesAsync();
+        }
+
         await _context.SaveChangesAsync();
 
         return checkOutData;
