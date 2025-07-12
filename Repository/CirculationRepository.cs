@@ -109,7 +109,7 @@ public class CirculationRepository
         // Lets check if the bookcopy exists
         var bookCopy = await _booksCopyContext.BookCopy.FirstOrDefaultAsync(p => p.ID == bookId) ?? throw new DataNotFound("Could not locate requested book copy", "", "");
         var patron = await _userDbContext.Users.FirstOrDefaultAsync(p => p.auth0id == patronAuth0Id) ?? throw new DataNotFound($"Could not locate patron with auth0id", "", patronAuth0Id);
-        var circulationItem = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookCopy.BookId && p.Status == BookStatus.checked_out && p.UserId == patron.id) ?? throw new DataNotFound("Could not locate checkout record", "", $"{bookId}");
+        var circulationItem = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookCopy.ID && p.Status == BookStatus.checked_out && p.UserId == patron.id) ?? throw new DataNotFound("Could not locate checkout record", "", $"{bookId}");
         circulationItem.ReturnDate = DateTime.UtcNow;
         circulationItem.Status = BookStatus.returned;
         await _context.SaveChangesAsync();

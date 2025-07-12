@@ -102,14 +102,14 @@ namespace Cibrary_Backend.Controllers
             }
         }
 
-        [HttpPost("checkoutInBook")]
+        [HttpPost("checkInABook")]
         [Authorize]
         public async Task<ActionResult<CheckInResponse>> Checkin([FromBody] CheckoutInRequest body)
         {
             var auth0User = User.FindFirst(AUTH_ID_KEY)?.Value;
             if (string.IsNullOrEmpty(auth0User)) return Unauthorized();
             var permission = await _userService.GetUserAsync(auth0User);
-            if (permission == null || permission.Role != UserRole.admin) return Unauthorized();
+            if (permission == null || permission.Role != UserRole.admin) return StatusCode(401, new { error = "Please verify you have permissions for this action!" });
             try
             {
                 CheckInResponse res = await _circulationService.CheckinBook(body.BookId, body.UserId);
