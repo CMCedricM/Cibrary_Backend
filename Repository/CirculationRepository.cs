@@ -45,7 +45,7 @@ public class CirculationRepository
         if (user == null) throw new NotAllowed($"Could not locate user with provided id {user_id}", user_id);
 
         // Verify that there is no pending or checked out status of the book
-        var findCirculation = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookId && (p.BookCopy.Status != BookStatus.returned || p.Status == BookStatus.pending || p.Status == BookStatus.checked_out));
+        var findCirculation = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookId && (p.Status == BookStatus.pending || p.Status == BookStatus.checked_out));
         if (findCirculation != null) throw new ConflictFound("This book already has a checkout request", book.Book.Isbn, book.Book.Title);
         // Run the checkout flow
         // 1. Create a record in the Circulation 
@@ -107,12 +107,16 @@ public class CirculationRepository
     public async Task<CheckInResponse> CheckinBook(int bookId, string patronAuth0Id)
     {
         // Lets check if the bookcopy exists
-        var bookCopy = await _booksCopyContext.BookCopy.FirstOrDefaultAsync(p => p.ID == bookId) ?? throw new DataNotFound("Could not locate requested book copy", "", "");
+        var bookCopy = await _booksCopyContext.BookCopy.Include(b => b.Book).FirstOrDefaultAsync(p => p.ID == bookId) ?? throw new DataNotFound("Could not locate requested book copy", "", "");
         var patron = await _userDbContext.Users.FirstOrDefaultAsync(p => p.auth0id == patronAuth0Id) ?? throw new DataNotFound($"Could not locate patron with auth0id", "", patronAuth0Id);
         var circulationItem = await _context.Circulation.FirstOrDefaultAsync(p => p.BookCopyId == bookCopy.ID && p.Status == BookStatus.checked_out && p.UserId == patron.id) ?? throw new DataNotFound("Could not locate checkout record", "", $"{bookId}");
         circulationItem.ReturnDate = DateTime.UtcNow;
         circulationItem.Status = BookStatus.returned;
         await _context.SaveChangesAsync();
+
+        // Also write to the book copy database
+        bookCopy.Status = BookStatus.returned;
+        await _booksCopyContext.SaveChangesAsync();
 
         // Return the reciept
         CheckInResponse res = new()
