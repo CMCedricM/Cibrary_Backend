@@ -18,25 +18,6 @@ namespace Cibrary_Backend.Controllers
             _context = context;
         }
 
-
-        private readonly BookProfile[] books =
-        {
-            new BookProfile
-            {
-                Title = "I am book",
-                Isbn = "217316328",
-                ID = 1,
-                TotalCnt = 0,
-            },
-             new BookProfile
-            {
-                Title = "I am book",
-                Isbn = "217316328",
-                ID = 2,
-                TotalCnt = 80,
-            },
-        };
-
         [HttpGet("count")]
         [Authorize]
         public async Task<ActionResult<int>> GetCount()
@@ -46,17 +27,9 @@ namespace Cibrary_Backend.Controllers
             return Ok(cnt);
         }
 
-        [HttpGet("test")]
-        [Authorize]
-        public ActionResult<BookProfile[]> GetTestBooks()
-        {
-            return Ok(books);
-        }
-
-
         [HttpPost("createABook")]
         [Authorize]
-        public async Task<ActionResult<BookProfile>> CreateABook(BookProfile book)
+        public async Task<ActionResult<Book>> CreateABook(Book book)
         {
             try
             {
@@ -72,7 +45,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpGet("search")]
         [Authorize]
-        public async Task<ActionResult<List<BookProfile>?>> FindABookTitle([FromQuery] BookSearch query)
+        public async Task<ActionResult<List<Book>?>> FindABookTitle([FromQuery] BookSearch query)
         {
 
             var res = await _context.FindABook(query);
@@ -83,20 +56,19 @@ namespace Cibrary_Backend.Controllers
 
 
         [HttpGet("/isbn/{isbn}")]
-        public async Task<ActionResult<BookProfile?>> GetBookByISBN(string isbn)
+        public async Task<ActionResult<Book?>> GetBookInformationByISBN(string isbn)
         {
-            var aBook = await _context.GetBookByISBN(isbn);
+            var aBook = await _context.GetBookInformationByISBNAsync(isbn);
 
             if (aBook == null) return NotFound();
 
             return Ok(aBook);
         }
 
-
         [HttpGet("{id}")]
-        public async Task<ActionResult<BookProfile?>> GetBookById([FromRoute] int id)
+        public async Task<ActionResult<Book?>> GetBookInformationById([FromRoute] int id)
         {
-            var aBook = await _context.GetBookById(id);
+            var aBook = await _context.GetBookInformationByIdAsync(id);
 
             if (aBook == null) return NotFound();
 
@@ -105,7 +77,7 @@ namespace Cibrary_Backend.Controllers
 
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<ActionResult<BookProfile>> UpdateABook(int id, [FromBody] BookProfile req)
+        public async Task<ActionResult<Book>> UpdateABook(int id, [FromBody] Book req)
         {
 
             try

@@ -19,29 +19,29 @@ public class BooksServices
         return count;
     }
 
-    public async Task<BookProfile?> GetBookById(int id)
+    public async Task<Book?> GetBookInformationByIdAsync(int id)
     {
-        var book = await _repository.GetBookById(id);
+        var book = await _repository.GetBookByInformationById(id);
 
         return book;
     }
 
-    public async Task<BookProfile?> GetBookByISBN(string isbn)
+    public async Task<Book?> GetBookInformationByISBNAsync(string isbn)
     {
-        var book = await _repository.GetBookByISBN(isbn);
+        var book = await _repository.GetBookInformationByISBN(isbn);
 
         return book;
     }
 
-    public async Task<BookProfile?> GetBookAsnyc(string isbn)
+    public async Task<Book?> GetBookAsnyc(string isbn)
     {
-        BookProfile? aBook = await _repository.GetBookByISBN(isbn);
+        Book? aBook = await _repository.GetBookInformationByISBN(isbn);
 
         return aBook;
 
     }
 
-    public async Task<BookProfile> CreateBookAsync(BookProfile aBook)
+    public async Task<Book> CreateBookAsync(Book aBook)
     {
 
         var createdBook = await _repository.CreateBook(aBook);
@@ -50,7 +50,7 @@ public class BooksServices
 
     }
 
-    public async Task<BookProfile?> UpdateBook(int id, BookProfile req)
+    public async Task<Book?> UpdateBook(int id, Book req)
     {
         var updatedBook = await _repository.UpdateBook(id, req);
 
@@ -58,7 +58,7 @@ public class BooksServices
 
     }
 
-    public async Task<List<BookProfile>?> FindABook(BookSearch item)
+    public async Task<List<Book>?> FindABook(BookSearch item)
     {
         var results = await _repository.FindBook(item);
 

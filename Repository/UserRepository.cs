@@ -5,17 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cibrary_Backend.Repository;
 
-public class UsersRepository
+public class UserRepository
 {
-    private readonly UsersDBContext _context;
+    private readonly UserDBContext _context;
 
-    public UsersRepository(UsersDBContext context)
+    public UserRepository(UserDBContext context)
     {
         _context = context;
     }
 
 
-    public async Task<UsersProfile?> GetUser(string userId)
+    public async Task<User?> GetUser(string userId)
     {
 
         var userInfo = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == userId);
@@ -23,7 +23,17 @@ public class UsersRepository
         return userInfo;
     }
 
-    public async Task<UsersProfile> CreateNewUser(UsersProfile user)
+    public async Task<List<User>?> GetUsers(UsersSearch query)
+    {
+        if (!string.IsNullOrWhiteSpace(query.Role.ToString()))
+        {
+            var userData = await _context.Users.Where(p => p.Role == query.Role).ToListAsync();
+            return userData;
+        }
+
+        return null;
+    }
+    public async Task<User> CreateNewUser(User user)
     {
         var checkUser = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == user.auth0id);
         if (checkUser != null) return checkUser;
@@ -35,12 +45,12 @@ public class UsersRepository
         return user;
     }
 
-    public async Task<UsersProfile?> UpdateUser(UsersProfile userProfile)
+    public async Task<User?> UpdateUser(User userProfile)
     {
         var user = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
         if (user != null)
         {
-            var properties = typeof(UsersProfile).GetProperties();
+            var properties = typeof(User).GetProperties();
             foreach (var prop in properties)
             {
                 if (prop.Name != "id")
@@ -50,14 +60,14 @@ public class UsersRepository
                 }
             }
         }
-        else return null ; //return error 
+        else return null; //return error 
 
         await _context.SaveChangesAsync();
 
         return user;
     }
 
-    public async Task<int> RemoveUser(UsersProfile userProfile)
+    public async Task<int> RemoveUser(User userProfile)
     {
         var user = await _context.Users.FirstOrDefaultAsync(b => b.auth0id == userProfile.auth0id);
         if (user != null)

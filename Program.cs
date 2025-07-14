@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Auth0Net.DependencyInjection;
+using Cibrary_Backend.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,25 +51,38 @@ builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializ
 builder.Services.AddOpenApi();
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Services.AddScoped<UsersRepository>();
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UsersServices>();
+builder.Services.AddScoped<UserUpdateAuth0Services>();
 
 builder.Services.AddScoped<BooksRepository>();
 builder.Services.AddScoped<BooksServices>();
 
+builder.Services.AddScoped<CirculationRepository>();
+builder.Services.AddScoped<CirculationServices>();
 
-builder.Services.AddScoped<UserUpdateAuth0Services>();
+builder.Services.AddScoped<BookCopyRepository>();
+
 
 builder.Services.AddHttpClient();
 
-var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET");
+// Database contexts
+var connectString = Environment.GetEnvironmentVariable("DATABASE_URL_DOTNET") ?? throw new InvalidOperationException("Database string missing");
 
-builder.Services.AddDbContext<UsersDBContext>(options =>
-    options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
+builder.Services.AddDbContext<UserDBContext>(options =>
+    options.UseNpgsql(connectString, o => o.MapEnum<UserRole>("user_status")));
 
-builder.Services.AddDbContext<BooksDBContext>(options =>
-    options.UseNpgsql(connectString ?? throw new InvalidOperationException("Database string missing")));
+builder.Services.AddDbContext<BookDBContext>(options =>
+    options.UseNpgsql(connectString));
 
+builder.Services.AddDbContext<CirculationDBContext>(options =>
+    options.UseNpgsql(connectString, o => o.MapEnum<BookStatus>("book_status")));
+
+builder.Services.AddDbContext<BookCopyDBContext>(options =>
+    options.UseNpgsql(connectString, o => o.MapEnum<BookStatus>("book_status")));
+
+
+// Cors Rules
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
@@ -76,8 +90,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-            builder.WithOrigins("https://cibrary.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            builder.WithOrigins("http://localhost:3000", "http://localhost:7071", "https://cibrary.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         }
     );
 });

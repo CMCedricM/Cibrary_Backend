@@ -1,6 +1,3 @@
-using System;
-using Auth0.ManagementApi.Models;
-
 namespace Cibrary_Backend.Errors;
 
 
@@ -28,11 +25,24 @@ public class ForbiddenFieldException(string message, List<string> fields) : Gene
 
 }
 
-
-public class DataNotFound(string message, string isbn, string title) : GeneralException(message)
+public class NotAllowed(string message, string userId) : GeneralException(message)
 {
-    public string Title { get; } = title;
-    public string Isbn { get; } = isbn;
+    public string UserId { get; } = userId;
+    public override int StatusCode => 401;
+
+    public override object ToErrorResponse() => new
+    {
+        StatusCode,
+        Message,
+
+    };
+
+
+}
+public class DataNotFound(string message, string objectName, string ObjectIdentifier) : GeneralException(message)
+{
+    public string ObjectName { get; } = objectName;
+    public string ObjectIdentifier { get; } = ObjectIdentifier;
 
     public override int StatusCode => 404;
 
@@ -40,8 +50,8 @@ public class DataNotFound(string message, string isbn, string title) : GeneralEx
     {
         StatusCode,
         Message,
-        Isbn,
-        Title
+        ObjectIdentifier,
+        ObjectName
     };
 
 }

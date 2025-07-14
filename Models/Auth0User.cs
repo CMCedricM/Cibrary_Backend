@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cibrary_Backend.Models
 {
-    public class Auth0UserProfile
+    [Table("users")]
+    public class Auth0User
     {
         [Key]
         public int id { get; set; }

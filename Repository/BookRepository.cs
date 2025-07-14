@@ -1,18 +1,18 @@
 using Cibrary_Backend.Contexts;
 using Cibrary_Backend.Errors;
 using Cibrary_Backend.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Cibrary_Backend.Repository;
 using Microsoft.EntityFrameworkCore;
 
 public class BooksRepository
 {
-    private readonly BooksDBContext _context;
+    private readonly BookDBContext _context;
+    private readonly BookCopyRepository _bookCopyRepository;
 
-
-    public BooksRepository(BooksDBContext context)
+    public BooksRepository(BookDBContext context, BookCopyRepository bookCopyRepository)
     {
         _context = context;
+        _bookCopyRepository = bookCopyRepository;
     }
 
     public async Task<int> GetBookCount()
@@ -22,13 +22,13 @@ public class BooksRepository
         return count;
     }
 
-    public async Task<BookProfile?> GetBookById(int id)
+    public async Task<Book?> GetBookByInformationById(int id)
     {
         var aBook = await _context.Books.FirstOrDefaultAsync(b => id == b.ID);
 
         return aBook;
     }
-    public async Task<BookProfile?> GetBookByISBN(string isbn)
+    public async Task<Book?> GetBookInformationByISBN(string isbn)
     {
         var getBook = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == isbn);
 
@@ -36,24 +36,31 @@ public class BooksRepository
 
     }
 
-    public async Task<BookProfile> CreateBook(BookProfile book)
+    public async Task<Book> CreateBook(Book book)
     {
-        var aBook = await GetBookByISBN(book.Isbn);
+        var aBook = await GetBookInformationByISBN(book.Isbn);
         if (aBook != null) throw new ConflictFound($"{(book.Title != string.Empty ? book.Title : "book")} with {book.Isbn} exists ",
          book.Isbn, book.Title);
 
-        _context.Books.Add(book);
+        // Since we are creating the book here we can jsut assume the available count
+        // is the total count
+        book.AvailabilityCnt = book.TotalCnt;
+
+        // Create the book first in the Book table
+        await _context.Books.AddAsync(book);
         await _context.SaveChangesAsync();
+
+        await _bookCopyRepository.CreateABookCopy(book);
 
         return book;
     }
 
-    public async Task<BookProfile?> UpdateBook(int id, BookProfile book)
+    public async Task<Book?> UpdateBook(int id, Book book)
     {
-        var aBook = await GetBookById(id);
+        var aBook = await GetBookByInformationById(id);
         if (aBook == null) return null;
 
-        var properties = typeof(BookProfile).GetProperties();
+        var properties = typeof(Book).GetProperties();
 
         foreach (var prop in properties)
         {
@@ -74,7 +81,7 @@ public class BooksRepository
     }
 
 
-    public async Task<List<BookProfile>?> FindBook(BookSearch item)
+    public async Task<List<Book>?> FindBook(BookSearch item)
     {
         if (!string.IsNullOrWhiteSpace(item.Isbn))
         {

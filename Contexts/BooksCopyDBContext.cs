@@ -1,16 +1,14 @@
 using Cibrary_Backend.Models;
-using Cibrary_Backend.Enums;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Cibrary_Backend.Contexts;
 
-public class UserDBContext : DbContext
+public class BookCopyDBContext : DbContext
 {
+    public DbSet<BookCopy> BookCopy { get; set; }
 
-    public DbSet<User> Users { get; set; }
-
-    public UserDBContext(DbContextOptions<UserDBContext> options)
-       : base(options) { }
+    public BookCopyDBContext(DbContextOptions<BookCopyDBContext> options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -23,12 +21,8 @@ public class UserDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<User>().ToTable("users");
-        modelBuilder.Entity<User>()
-      .Property(u => u.Role)
-      .HasColumnType("user_status");
+        modelBuilder.HasPostgresEnum<BookStatus>();
+        modelBuilder.Entity<BookCopy>().ToTable("bookscopy");
+        modelBuilder.Entity<BookCopy>().Property(r => r.Status);
     }
-
-
 }

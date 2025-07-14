@@ -288,5 +288,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 .env
+.env.production
 databases
 .DS_Store

@@ -3,13 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cibrary_Backend.Models
 {
-    public class BookProfile
+    [Table("books")]
+    public class Book
     {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public int ID { get; set; }
+
+        [Column("uuid")]
+        public Guid? Uuid { get; set; }
         [Column("isbn")]
         [Required]
         public string Isbn { get; set; } = string.Empty;
@@ -17,6 +21,10 @@ namespace Cibrary_Backend.Models
         public string Title { get; set; } = string.Empty;
         [Column("releasedate")]
         public DateTime? ReleaseDate { get; set; } = DateTime.UtcNow;
+
+        [Column("created_at")]
+        public DateTime Created_At { get; set; } = DateTime.UtcNow;
+
         [Column("availabilitycnt")]
         public int AvailabilityCnt { get; set; } = 0;
         [Column("totalcnt")]

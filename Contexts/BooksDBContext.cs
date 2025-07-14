@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Cibrary_Backend.Contexts;
 
 
-public class BooksDBContext : DbContext
+public class BookDBContext : DbContext
 {
-    public DbSet<BookProfile> Books { get; set; }
+    public DbSet<Book> Books { get; set; }
 
-    public BooksDBContext(DbContextOptions<BooksDBContext> options)
+    public BookDBContext(DbContextOptions<BookDBContext> options)
           : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,7 +24,7 @@ public class BooksDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BookProfile>().ToTable("books");
+        modelBuilder.Entity<Book>().ToTable("books");
         modelBuilder.HasPostgresEnum<Status>();
     }
 
